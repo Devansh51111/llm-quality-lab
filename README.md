@@ -114,3 +114,14 @@ Do NOT rename contract pass rate as "accuracy", "faithfulness", or "hallucinatio
 ## Interview walkthrough
 
 Read [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md), [test strategy](docs/TEST_STRATEGY.md), and [source notes](docs/SOURCES.md). Explain what you can demonstrate, what is synthetic, and the limitations before claiming the project on a resume.
+
+
+## Honest limits (current demo)
+
+- Rule checks (required and forbidden phrases, JSON, PII patterns) test contracts, not truth. Passing them does not show an answer is correct.
+- AI evidence review is experimental: same-model suggestions with exact reference quotes. Quote presence is checked, logical support is not. Observed on 3 fictional labeled cases (3 of 3 matched) plus 1 controlled embedded-instruction case. That is a smoke check, not a benchmark or a hallucination detector.
+- The optional model judge is uncalibrated and not ground truth.
+- Safety is pattern matching on a few identifiers and prompt-leak markers. There is no jailbreak suite and no safety score.
+- Timing is a small sequential sample, not a load test.
+- Live AI is owner-only, runs on free tiers, and may hit provider quotas. Free hosting sleeps when idle and the first request can take about 50 seconds.
+- Use fictional or public inputs only.
