@@ -48,3 +48,5 @@ storage.saveStoredCases([legacy]);assert.equal(storage.getStoredCases()[0].expec
 assert.equal(storage.getStoredCases()[0].expectedRequiredPhrases.includes('14-day'),false);
 storage.saveStoredCases([{...legacy,question:'Custom question'}]);assert.equal(storage.getStoredCases()[0].expectedDurationDays,undefined);
 console.log('PASS untouched legacy trial migrates, custom question stays unchanged');
+
+storage.saveStoredRun(a);assert.equal(storage.getStoredRuns()[0].runId,a.runId);console.log('PASS stored run roundtrip distinct from dataset validation');

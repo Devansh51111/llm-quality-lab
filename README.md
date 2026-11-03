@@ -4,9 +4,9 @@ A working, local-first QA framework for saved LLM responses. It makes test expec
 
 **Version 0.1 is a deterministic contract evaluator, not an automatic truth detector.** The bundled baseline and candidate responses are hand-authored synthetic fixtures, NOT outputs from two real models or prompts. No paid API is required. No API key belongs in the browser demo.
 
-## Studio 0.2 source and private real-AI preview
+## Studio 0.3 integrated source and private real-AI preview
 
-The [`studio/`](studio/) folder adds the dark React/TypeScript dashboard and server-side Gemini adapter used in the private owner-only AI Studio preview. Two genuine Gemini 3.5 Flash-Lite responses were observed on fictional inputs; this is connection evidence, not a benchmark. Historical evidence and its original weak duration-check caveat are preserved in [`studio/evidence/`](studio/evidence/). New source tests cover stronger bounded day-duration checks, malformed imports, release boundaries and regression contract matching.
+The [`studio/`](studio/) folder adds the dark React/TypeScript dashboard and server-side Gemini adapter used in the private owner-only AI Studio preview. Two genuine Gemini 3.5 Flash-Lite responses were observed on fictional inputs; this is connection evidence, not a benchmark. Historical evidence and its original weak duration-check caveat are preserved in [`studio/evidence/`](studio/evidence/). Source now integrates all eight module areas at a prototype level: response checks, datasets, human claim review, heuristic safety, provider-native multi-turn transport, sequential performance experiments, regression and analytics. New unit and browser checks cover their real functions; live multi-turn/performance certification and standalone owner-only inference hosting remain pending.
 
 Live inference remains private. The public Pages demo below is still synthetic-only. The exported server is local-only by default and must not be exposed publicly without real access controls. See [Studio setup, honest limits and interview demo](studio/README.md).
 

@@ -1,0 +1,11 @@
+import type {RunResult} from '../types/qa';
+export type ClaimVerdict='unreviewed'|'supported'|'unsupported'|'uncertain';
+export interface ClaimReview {id:string;claim:string;evidence:string;verdict:ClaimVerdict;note:string}
+export function splitClaims(output:string):ClaimReview[]{return output.split(/\n+|(?<=[.!?])\s+(?=[A-Z])/).map(s=>s.replace(/^[-*•]\s*/, '').trim()).filter(Boolean).slice(0,100).map((claim,i)=>({id:`claim-${i+1}`,claim,evidence:'',verdict:'unreviewed',note:''}));}
+export function evidenceSuggestions(claim:string,context:string):string[]{const words=(s:string)=>new Set((s.toLowerCase().match(/[a-z0-9]+/g)||[]).filter(w=>w.length>3));const q=words(claim);return context.split(/\n+|(?<=[.!?])\s+/).map(s=>({s,score:[...words(s)].filter(w=>q.has(w)).length})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,3).map(x=>x.s);}
+export function percentile(values:number[],p:number):number|null{const a=values.filter(v=>Number.isFinite(v)&&v>=0).sort((a,b)=>a-b);if(!a.length)return null;return a[Math.max(0,Math.ceil(p*a.length)-1)];}
+export function performanceSummary(samples:{latencyMs:number|null;error?:string}[]){const values=samples.filter(s=>!s.error&&s.latencyMs!==null).map(s=>s.latencyMs!);return {attempts:samples.length,successes:values.length,errors:samples.filter(s=>s.error).length,p50:percentile(values,.5),p95:percentile(values,.95),min:values.length?Math.min(...values):null,max:values.length?Math.max(...values):null};}
+export function categorySummary(run:RunResult){const map=new Map<string,{category:string;total:number;passed:number;critical:number}>();for(const r of run.results){const x=map.get(r.category)||{category:r.category,total:0,passed:0,critical:0};x.total++;x.passed+=Number(r.passed);x.critical+=Number(r.isCriticalFailure);map.set(r.category,x);}return [...map.values()];}
+export function downloadJson(name:string,data:unknown){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+export function readLocal<T>(key:string,fallback:T):T{try{return JSON.parse(localStorage.getItem(key)||'null')??fallback;}catch{return fallback;}}
+export function writeLocal(key:string,data:unknown){localStorage.setItem(key,JSON.stringify(data));}

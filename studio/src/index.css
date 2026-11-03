@@ -59,3 +59,8 @@ main select { width:100%; }
  .dataset-table .truncate { white-space:normal; overflow:visible; text-overflow:clip; }
  .dataset-table td:last-child > div { justify-content:flex-start; }
 }
+
+.ql-input { display:block; width:100%; padding:12px; margin-top:8px; border:1px solid #3f3f46; border-radius:8px; background:#09090b; color:#f4f4f5; font-size:14px; }
+textarea.ql-input { min-height:100px; }
+.ql-button { min-height:44px; padding:10px 16px; border:1px solid #3f3f46; border-radius:8px; color:#67e8f9; background:#18181b; font-size:13px; }
+.ql-button:disabled { opacity:.45; cursor:not-allowed; }

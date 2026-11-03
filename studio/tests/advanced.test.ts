@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import {splitClaims,evidenceSuggestions,percentile,performanceSummary,categorySummary} from '../src/utils/advanced';
+assert.equal(splitClaims('Trial is 14 days. Billing requires no card.').length,2);
+assert.equal(splitClaims('').length,0);
+assert.equal(splitClaims('A claim.')[0].verdict,'unreviewed');
+assert.deepEqual(evidenceSuggestions('Trial duration is fourteen days.','Pricing is monthly. Trial duration is fourteen days.'),['Trial duration is fourteen days.']);
+assert.equal(percentile([], .95),null);assert.equal(percentile([10,40,20,30],.5),20);assert.equal(percentile([10,40,20,30],.95),40);
+assert.deepEqual(performanceSummary([{latencyMs:100},{latencyMs:1000,error:'quota'}]),{attempts:2,successes:1,errors:1,p50:100,p95:100,min:100,max:100});
+const fake:any={results:[{category:'A',passed:true,isCriticalFailure:false},{category:'A',passed:false,isCriticalFailure:true},{category:'B',passed:true,isCriticalFailure:false}]};
+assert.deepEqual(categorySummary(fake),[{category:'A',total:2,passed:1,critical:1},{category:'B',total:1,passed:1,critical:0}]);
+console.log('PASS claim segmentation, human-default verdict, lexical suggestions, nearest-rank percentiles, errors excluded, category analytics');
+
+const {validateConversation,providerContents}=await import('../src/utils/conversation');
+const turns=[{role:'user' as const,text:'My name is Arjun.'},{role:'model' as const,text:'Noted.'},{role:'user' as const,text:'What did I tell you?'}];
+assert.equal(validateConversation(turns),true);assert.deepEqual(providerContents(turns),[{role:'user',parts:[{text:'My name is Arjun.'}]},{role:'model',parts:[{text:'Noted.'}]},{role:'user',parts:[{text:'What did I tell you?'}]}]);
+for(const bad of [[],[{role:'model',text:'wrong first'}],[{role:'user',text:''}],[{role:'user',text:'Hi'},{role:'user',text:'wrong order'}],Array.from({length:17},(_,i)=>({role:i%2?'model':'user',text:'x'}))])assert.equal(validateConversation(bad),false);
+console.log('PASS provider-native multi-turn order/content preserved; malformed role order, blank and oversized sessions rejected');
+const {importRun}=await import('../src/utils/importRun');
+const {SEED_TEST_CASES}=await import('../src/data/seedData');
+const original=SEED_TEST_CASES[0];
+const report={runOrigin:'live_gemini_api',requestedModel:'claimed model',datasetSnapshot:[original],results:[{testCaseId:original.id,actualOutput:'wrong',passed:true,latencyMs:10}]};
+const imported=importRun(report);assert.equal(imported.passedCases,0);assert.ok(imported.notes?.includes('IMPORTED_UNVERIFIED'));assert.equal(imported.actualModelVersion,'not independently verified');
+assert.throws(()=>importRun({...report,results:[]}));assert.throws(()=>importRun({...report,datasetSnapshot:[{}]}));
+console.log('PASS run import re-evaluates rather than trusting forged passed fields; labels provenance unverified and rejects missing snapshots');
+const {signSession,validSession,constantEqual}=await import('../src/utils/ownerAuth');
+const token=signSession('test-fixture-only-not-real-secret',Date.now()+10000);assert.equal(validSession(token,'test-fixture-only-not-real-secret'),true);assert.equal(validSession(token+'x','test-fixture-only-not-real-secret'),false);assert.equal(validSession(token,'wrong'),false);assert.equal(validSession(token,'test-fixture-only-not-real-secret',Date.now()+20000),false);assert.equal(constantEqual('same','same'),true);assert.equal(constantEqual('same','different'),false);
+console.log('PASS signed owner session validates, rejects forgery/wrong-key/expiry; constant-time equal-length comparison');

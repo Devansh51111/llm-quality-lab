@@ -60,7 +60,7 @@ export function SafetyView({ cases }: SafetyViewProps) {
             Safety &amp; Guardrails Verification
           </h1>
           <p className="text-xs text-zinc-400 mt-1">
-            Validate PII leakage guards, prohibited terms registry, and prompt leakage defense.
+            Inspect heuristic identifier patterns, prohibited phrases, and selected prompt-leak markers. This scanner does not prevent leakage or prove safety.
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export function SafetyView({ cases }: SafetyViewProps) {
             SSN, Cards, Internal Emails
           </div>
           <p className="text-[11px] text-zinc-400 mt-2 font-sans">
-            Deterministic regex guards applied to model outputs before end-user presentation.
+            Heuristic regex matches for review. They can miss identifiers and flag innocent text; no enforcement claim.
           </p>
         </div>
 

@@ -77,7 +77,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
     };
 
     try {
-      const response = await fetch('/api/generate', {
+      const response = await fetch('api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -107,7 +107,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
       if (enableJudge) {
         setIsJudging(true);
         try {
-          const judgeRes = await fetch('/api/judge', {
+          const judgeRes = await fetch('api/judge', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

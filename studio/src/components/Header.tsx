@@ -59,7 +59,7 @@ export function Header({
         {/* Runtime quota status */}
         <div className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-900 border border-zinc-800 rounded-md text-[11px] font-mono text-zinc-400">
           <span className={`w-2 h-2 rounded-full shrink-0 ${serverStatus?.hasApiKey ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-          <span>Runtime configured, quota may fail</span>
+          <span>{serverStatus?.hasApiKey ? 'Server credential present; quota may fail' : 'No live backend credential verified'}</span>
         </div>
 
         {/* Active Run Origin Badge */}

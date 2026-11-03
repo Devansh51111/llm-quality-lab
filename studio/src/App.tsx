@@ -1,3 +1,8 @@
+import {importRun} from './utils/importRun';
+import {ClaimsView} from './views/ClaimsView';
+import {ConversationsView} from './views/ConversationsView';
+import {PerformanceView} from './views/PerformanceView';
+import {AnalyticsView} from './views/AnalyticsView';
 import { useState, useEffect, useMemo } from 'react';
 import { Header } from './components/Header';
 import { Sidebar, TabId } from './components/Sidebar';
@@ -24,6 +29,8 @@ import {
 import { computeDatasetFingerprint, evaluateTestCase, buildRunResult } from './utils/evaluator';
 
 export default function App() {
+  const [ownerPassword,setOwnerPassword]=useState('');
+  const [ownerStatus,setOwnerStatus]=useState('');
   const [currentTab, setCurrentTab] = useState<TabId>('overview');
   const [cases, setCases] = useState<TestCase[]>(() => getStoredCases());
   const [allRuns, setAllRuns] = useState<RunResult[]>(() => getStoredRuns());
@@ -42,7 +49,7 @@ export default function App() {
 
   // Fetch server status on mount
   useEffect(() => {
-    fetch('/api/status')
+    fetch('api/status')
       .then((res) => res.json())
       .then((data) => {
         setServerStatus({
@@ -82,7 +89,7 @@ export default function App() {
       setSuiteProgress({ current: i + 1, total: cases.length, currentCaseName: tc.name });
 
       try {
-        const response = await fetch('/api/generate', {
+        const response = await fetch('api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -120,10 +127,12 @@ export default function App() {
           null,
           'live_gemini_api',
           requestedModel,
-          requestedModel,
+          'not reported',
           errorMsg
         );
         results.push(failedEvalResult);
+        for (const skipped of cases.slice(i+1)) results.push(evaluateTestCase(skipped,'',null,'live_gemini_api',requestedModel,'not reported','Not executed: suite stopped after provider/transport error.'));
+        break;
       }
     }
 
@@ -249,6 +258,12 @@ export default function App() {
 
         {/* Content Area */}
         <main className="flex-1 min-w-0 lg:pl-64 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+          <div className="mb-5 p-4 bg-zinc-900 border border-zinc-700 rounded-xl text-sm space-y-2">
+            <details><summary className="cursor-pointer text-cyan-300">Private backend owner sign-in</summary><p className="text-xs text-zinc-400 mt-2">Only the owner can use live model calls. No password is stored in this browser.</p><input aria-label="Owner access password" type="password" autoComplete="current-password" className="ql-input" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)}/><button className="ql-button mt-2" onClick={async()=>{try{const r=await fetch('api/owner/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:ownerPassword})});const d=await r.json();setOwnerStatus(r.ok?'Owner signed in for 8 hours.':d.error);setOwnerPassword('');}catch{setOwnerStatus('No private backend is connected at this URL.');}}}>Sign in to private live backend</button><p role="status">{ownerStatus}</p></details>
+            <p>Studio 0.3. Public static pages support rule checks, imported reports and synthetic replay. Live calls require a separately configured private backend and owner sign-in. Use fictional/public inputs only.</p>
+            <label className="block text-cyan-300">Import full run JSON (unverified evidence, checks recomputed)<input aria-label="Import full run JSON" type="file" accept="application/json,.json" className="block mt-2 max-w-full text-xs" onChange={async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>5000000)throw Error('Maximum file size5MB.');const run=importRun(JSON.parse(await f.text()));saveStoredRun(run);setAllRuns(getStoredRuns());setActiveRunIdState(run.runId);}catch(err){alert(String(err));}e.target.value='';}}/></label>
+            {activeRun?.notes?.includes('IMPORTED_UNVERIFIED')&&<p className="text-amber-300">{activeRun.notes}</p>}
+          </div>
           {/* Progress Banner during Live Suite Run */}
           {isRunningSuite && suiteProgress && (
             <div className="mb-6 p-4 bg-cyan-950/70 border border-cyan-700/80 rounded-xl shadow-lg animate-pulse text-xs font-mono text-cyan-200">
@@ -271,6 +286,10 @@ export default function App() {
             </div>
           )}
 
+          {currentTab === 'claims' && <ClaimsView activeRun={activeRun}/>}
+          {currentTab === 'conversations' && <ConversationsView/>}
+          {currentTab === 'performance' && <PerformanceView cases={cases}/>}
+          {currentTab === 'analytics' && <AnalyticsView activeRun={activeRun} allRuns={allRuns}/>}
           {/* Current Active View */}
           {currentTab === 'overview' && (
             <OverviewView

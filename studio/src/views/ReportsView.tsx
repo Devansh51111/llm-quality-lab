@@ -44,7 +44,7 @@ export function ReportsView({
 
 ## Executive Summary
 - **Deterministic Rules Pass Rate:** **${run.deterministicPassRate}%** (*Strict rule compliance; not labeled accuracy or ground truth*)
-- **Release Gate Decision:** **${run.releaseGateStatus}** (${run.criticalFailures > 0 ? 'BLOCKED due to critical failure' : 'PASSED all critical rules'})
+- **Release Gate Decision:** **${run.releaseGateStatus}** (${run.releaseGateReason})
 - **Total Test Cases:** ${run.totalCases}
 - **Passed Cases:** ${run.passedCases}
 - **Failed Cases:** ${run.failedCases}
@@ -77,7 +77,7 @@ ${r.actualOutput}
 
   const handleDownloadJson = (run: RunResult) => {
     const reportData = {
-      qualityLabVersion: '1.0.0-owner-preview',
+      qualityLabVersion: '0.3.0',
       reportType: 'LLM_QA_AUDIT_REPORT',
       provenance: {
         runId: run.runId,
@@ -87,7 +87,7 @@ ${r.actualOutput}
         actualModelVersion: run.actualModelVersion,
         runOrigin: run.runOrigin,
         datasetFingerprint: run.datasetFingerprint,
-        environment: 'AI Studio Preview Runtime',
+        environment: 'browser runtime (deployment not independently verified)',
       },
       summary: {
         deterministicPassRate: run.deterministicPassRate,
@@ -100,6 +100,8 @@ ${r.actualOutput}
         minLatencyMs: run.minLatencyMs,
         maxLatencyMs: run.maxLatencyMs,
       },
+      notes: run.notes,
+      datasetSnapshot: run.datasetSnapshot,
       results: run.results,
       complianceDisclaimer:
         'Notice: Deterministic rule pass rate does not represent ground truth accuracy or absolute legal compliance.',

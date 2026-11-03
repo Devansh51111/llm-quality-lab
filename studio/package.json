@@ -1,12 +1,12 @@
 {
   "name": "llm-qualitylab-studio",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
     "build": "vite build",
-    "test": "tsx tests/evaluator.test.ts",
+    "test": "tsx tests/evaluator.test.ts && tsx tests/advanced.test.ts",
     "start": "NODE_ENV=production tsx server.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist",

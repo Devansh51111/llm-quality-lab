@@ -11,35 +11,35 @@ export function RoadmapModal({ isOpen, onClose }: RoadmapModalProps) {
   const roadmapItems = [
     {
       title: 'Multi-Turn Conversation QA & State Tracking',
-      status: 'Planned, not implemented in v1.0',
-      description: 'Evaluating multi-step context drift, session memory retention, and dialogue policy compliance across extended agent conversations.',
+      status: 'Source implemented, live verification pending',
+      description: 'Native user/model history transport, locally saved transcript and export. Human consistency review; no calibrated memory-accuracy claim.',
       icon: Layers,
       badgeColor: 'border-amber-700/60 bg-amber-950/40 text-amber-300',
     },
     {
       title: 'Appium & Mobile Device Test Runner',
-      status: 'Planned, not implemented in v1.0',
+      status: 'Planned, not implemented',
       description: 'End-to-end automated UI validation for iOS and Android webviews, capturing rendered LLM chat interfaces on physical or emulated devices.',
       icon: Smartphone,
       badgeColor: 'border-zinc-700/60 bg-zinc-800/60 text-zinc-300',
     },
     {
       title: 'AWS Bedrock & Multi-Cloud Provider Adapters',
-      status: 'Planned, not implemented in v1.0',
+      status: 'Planned, not implemented',
       description: 'External cloud runner integration for cross-vendor regression benchmarks (AWS Bedrock Claude, Amazon Titan, Azure OpenAI).',
       icon: Cloud,
       badgeColor: 'border-zinc-700/60 bg-zinc-800/60 text-zinc-300',
     },
     {
       title: 'Distributed Concurrent Load & Stress Testing',
-      status: 'Planned, not implemented in v1.0',
+      status: 'Planned, not implemented',
       description: 'High-throughput stress benchmarks to measure token generation latency degradation, rate-limit queuing, and TTFT (Time To First Token) under 500+ QPS load.',
       icon: Activity,
       badgeColor: 'border-zinc-700/60 bg-zinc-800/60 text-zinc-300',
     },
     {
       title: 'Automated Adversarial Red-Teaming & Fuzzing',
-      status: 'Planned, not implemented in v1.0',
+      status: 'Planned, not implemented',
       description: 'Automated perturbation mutation engine testing jailbreak prompts, token smuggling, base64 obfuscation, and prompt extraction attacks.',
       icon: Shield,
       badgeColor: 'border-zinc-700/60 bg-zinc-800/60 text-zinc-300',
@@ -63,14 +63,14 @@ export function RoadmapModal({ isOpen, onClose }: RoadmapModalProps) {
           </div>
           <div>
             <h2 className="text-lg font-bold text-white tracking-tight">Product Scope &amp; Roadmap</h2>
-            <p className="text-xs text-zinc-400 font-mono mt-0.5">Preview v1.0 Supported Capabilities &amp; Planned Modules</p>
+            <p className="text-xs text-zinc-400 font-mono mt-0.5">Studio 0.3 implemented scope and remaining validation</p>
           </div>
         </div>
 
         <div className="mb-4 p-3 bg-zinc-950/80 border border-zinc-800 rounded-lg text-xs text-zinc-400 leading-relaxed flex items-start gap-2.5">
           <Lock className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
           <div>
-            <strong className="text-zinc-200">Current Scope:</strong> LLM QualityLab v1.0 focuses strictly on single-turn deterministic reference paragraph QA, rule compliance verification, dataset editing, latency measurement, regression fingerprinting, and optional Gemini-based model judgment through AI Studio&apos;s free runtime.
+            <strong className="text-zinc-200">Current Scope:</strong> QualityLab includes deterministic response checks, datasets, human claim-evidence review, heuristic safety scans, conversation source, sequential performance experiments, regression and analytics. Live multi-turn/performance certification and standalone hosting are pending. Optional model judgment is uncalibrated; paid infrastructure and high-load tests are not enabled.
           </div>
         </div>
 
