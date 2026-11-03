@@ -11,7 +11,7 @@ export function RoadmapModal({ isOpen, onClose }: RoadmapModalProps) {
   const roadmapItems = [
     {
       title: 'Multi-Turn Conversation QA & State Tracking',
-      status: 'Source implemented, live verification pending',
+      status: 'Implemented, small live smoke check',
       description: 'Native user/model history transport, locally saved transcript and export. Human consistency review; no calibrated memory-accuracy claim.',
       icon: Layers,
       badgeColor: 'border-amber-700/60 bg-amber-950/40 text-amber-300',
@@ -70,7 +70,7 @@ export function RoadmapModal({ isOpen, onClose }: RoadmapModalProps) {
         <div className="mb-4 p-3 bg-zinc-950/80 border border-zinc-800 rounded-lg text-xs text-zinc-400 leading-relaxed flex items-start gap-2.5">
           <Lock className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
           <div>
-            <strong className="text-zinc-200">Current Scope:</strong> QualityLab includes deterministic response checks, datasets, human claim-evidence review, heuristic safety scans, conversation source, sequential performance experiments, regression and analytics. Live multi-turn/performance certification and standalone hosting are pending. Optional model judgment is uncalibrated; paid infrastructure and high-load tests are not enabled.
+            <strong className="text-zinc-200">Current Scope:</strong> QualityLab includes deterministic response checks, datasets, human claim-evidence review, heuristic safety scans, native conversations, sequential performance experiments, regression and analytics. Owner-only hosting and small live multi-turn/timing checks are recorded; broad reliability is not established. Reviewer checks add 24 AI-authored development fixtures, not independent human labels. Optional model judgment is uncalibrated; paid infrastructure and high-load tests are not enabled.
           </div>
         </div>
 

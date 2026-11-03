@@ -12,7 +12,7 @@ export function aggregateReview(claims:SemanticClaim[]):SemanticLabel {
 }
 export function scorePredictions(cases:ReviewerCase[],predictions:ReviewerPrediction[]){
  const ids=new Set(cases.map(c=>c.id));const byId=new Map<string,ReviewerPrediction>();
- for(const p of predictions){if(!ids.has(p.caseId)||byId.has(p.caseId))throw Error('Unknown or duplicate prediction case.');if(p.label!==null&&!semanticLabels.includes(p.label))throw Error('Unknown predicted label.');byId.set(p.caseId,p);}
+ for(const p of predictions){if(!p||typeof p.caseId!=='string')throw Error('Invalid prediction record.');if(!ids.has(p.caseId)||byId.has(p.caseId))throw Error('Unknown or duplicate prediction case.');if(p.label!==null&&!semanticLabels.includes(p.label))throw Error('Unknown predicted label.');byId.set(p.caseId,p);}
  const matrix=Object.fromEntries(semanticLabels.map(x=>[x,Object.fromEntries(semanticLabels.map(y=>[y,0]))])) as Record<SemanticLabel,Record<SemanticLabel,number>>;
  let completed=0,correct=0,errors=0;const failures:{id:string;expected:SemanticLabel;predicted:SemanticLabel|null;error?:string}[]=[];
  for(const c of cases){const p=byId.get(c.id);if(!p)continue;if(p.error||p.label===null){errors++;failures.push({id:c.id,expected:c.expected,predicted:null,error:p.error||'No label'});continue;}completed++;matrix[c.expected][p.label]++;if(c.expected===p.label)correct++;else failures.push({id:c.id,expected:c.expected,predicted:p.label});}
@@ -23,5 +23,5 @@ export function benchmarkSnapshot(){return {version:reviewerDatasetVersion,cases
 export function parsePredictionImport(raw:unknown):ReviewerPrediction[]{
  const x=raw as {version?:string;cases?:unknown;predictions?:ReviewerPrediction[]};if(!x||x.version!==reviewerDatasetVersion||JSON.stringify(x.cases)!==JSON.stringify(reviewerCases)||!Array.isArray(x.predictions))throw Error('Import must use the exact published case snapshot and version.');
  // Treat all provenance, model and timing fields as unverified import claims.
- const result=x.predictions.map(p=>({caseId:p.caseId,label:p.label,claims:Array.isArray(p.claims)?p.claims:[],error:typeof p.error==='string'?p.error:undefined}));scorePredictions(reviewerCases,result);return result;
+ const result=x.predictions.map(p=>{if(!p||typeof p.caseId!=='string')throw Error('Invalid prediction record.');return ({caseId:p.caseId,label:p.label,claims:Array.isArray(p.claims)?p.claims:[],error:typeof p.error==='string'?p.error:undefined})});scorePredictions(reviewerCases,result);return result;
 }

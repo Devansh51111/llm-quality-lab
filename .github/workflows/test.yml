@@ -4,7 +4,7 @@ permissions:
   contents: read
 jobs:
   python:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,7 +23,7 @@ jobs:
           python -m evalforge run --responses data/candidate.json --label 'Synthetic candidate' --out runs/candidate.json
           python -m evalforge compare runs/baseline.json runs/candidate.json
   promptfoo:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,7 +38,7 @@ jobs:
           PROMPTFOO_DISABLE_TELEMETRY: '1'
         run: npx --yes promptfoo@0.125.1 eval -c promptfooconfig.json --no-cache --no-progress-bar
   studio:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: studio

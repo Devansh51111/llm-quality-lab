@@ -1,3 +1,4 @@
+import {validateDataset} from '../utils/evaluator';
 import { useState } from 'react';
 import {
   Database,
@@ -134,14 +135,16 @@ export function DatasetsView({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if(file.size>5000000){alert('Maximum dataset file size is 5 MB.');e.target.value='';return;}
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
         const parsed = JSON.parse(event.target?.result as string);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        const validation=validateDataset(parsed);
+        if (validation.isValid) {
           onImportCases(parsed);
         } else {
-          alert('Invalid dataset file format. Expected a JSON array of test cases.');
+          alert('Invalid dataset. Existing cases kept. ' + validation.error);
         }
       } catch (err) {
         alert('Failed to parse dataset JSON file: ' + String(err));

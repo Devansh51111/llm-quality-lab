@@ -1,9 +1,15 @@
-# Deliberate next steps
+# Current evidence and deliberate next steps
 
-1. Expand from 16 demonstration cases to 50 human-reviewed golden and held-out cases. Add answer/reference rubrics, coverage tags and regression ownership.
-2. Run real model outputs through imports without inventing provenance. Keep keys server-side and use only an explicitly approved free route. Do not put API keys in GitHub Pages.
-3. Add and calibrate a semantic evaluator (DeepEval/Ragas/local judge) against human labels. Report uncertainty and error rates; do not rebrand keywords as faithfulness.
-4. Add multi-turn/tool-call schema and failure-recovery tests with explicit state assertions.
-5. Add performance trials with repeated latency distributions, real token accounting and transport error rates.
-6. Add Appium companion tests only after an Android emulator/device and test application are available. AWS/Device Farm are not needed for the free MVP.
-7. Consider PostgreSQL, authentication and a hosted backend when multi-user storage is a real requirement and hosting terms are approved.
+Current Studio: https://llm-quality-lab.onrender.com/ . Public UI, owner-only model calls, free Render and browser-local data.
+
+Implemented: rule contracts, 8 editable Studio fixtures (16 separate Python fixture cases), Promptfoo synthetic bridge, native multi-turn, small sequential timing experiment, human evidence review, experimental AI claim suggestions, regression/exports, and a reviewer experiment with 24 AI-authored development cases. Current-Studio Chromium Playwright and owner-auth integration run in CI. Optional Python backend has API and SQL tests.
+
+Next, in priority order:
+1. Obtain independent human labels and a genuinely unseen evaluation set. The recorded 19/24 development agreement is not calibration. Preserve all five disagreements and version the evaluator before any tuning.
+2. Expand real prompt/model comparison with matching case snapshots; do not invent improvement percentages or model provenance.
+3. Broader multi-turn/tool-call state assertions and safety checks; current pattern scans and a few instruction-in-candidate cases are not a jailbreak guarantee.
+4. Larger performance samples only within approved free limits. Current sequential p95 is not concurrency/throughput/TTFT evidence.
+5. Appium companion tests need a real target app and a device/emulator. Browser viewport checks are not native-mobile tests. AWS/Device Farm and paid providers are not enabled.
+6. Consider database-backed multi-user storage, durable auth/rate limits, deployment approval/rollback and independent security review only when requirements justify them. Render Free plus unit/E2E CI is not production-grade certification.
+
+DeepEval/Ragas are not integrated. The dependency-light metric harness is explicit about that; adding a library does not replace independent validation.

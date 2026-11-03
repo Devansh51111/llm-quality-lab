@@ -96,7 +96,7 @@ export function clearAllQualityLabStorage(): void {
     localStorage.removeItem(STORAGE_KEY_CASES);
     localStorage.removeItem(STORAGE_KEY_RUNS);
     localStorage.removeItem(STORAGE_KEY_ACTIVE_RUN);
-    for (const k of ['ql_claims_v1','ql_claim_output_v1','ql_claim_context_v1','ql_turns_v1','ql_turn_context_v1','ql_perf_v1','ql_perf_case_v1']) localStorage.removeItem(k);
+    for (const k of ['ql_claims_v1','ql_claim_output_v1','ql_claim_context_v1','ql_turns_v1','ql_turn_context_v1','ql_perf_v1','ql_perf_case_v1','ql_semantic_v1','ql_semantic_human_v1','ql_reviewer_checks_v1']) localStorage.removeItem(k);
   } catch (e) {
     console.error('[QualityLab Storage] Failed to clear local storage:', e);
   }

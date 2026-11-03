@@ -20,7 +20,7 @@ The cases test exact support, paraphrase, negation, numeric equivalence/contradi
 
 ## Free use and reproducibility
 
-All requests are sequential. The experiment stops on the first error; stop can also be requested after the current call. No automatic retries. The full suite uses up to 24 of the server's 30 requests/hour limit, shared with other model features. Provider free-tier quotas can stop it sooner. A small partial run must not be presented as the full benchmark. Export results before closing or changing browsers.
+All requests are sequential. Each browser request has a 90-second timeout (the provider may still finish server-side). The experiment stops on the first error; stop can also be requested after the current call. No automatic retries. The full suite uses up to 24 of the server's 30 requests/hour limit, shared with other model features. Provider free-tier quotas can stop it sooner. A small partial run must not be presented as the full benchmark. Export results before closing or changing browsers.
 
 Imported model/provenance fields are unverified. The exact dataset/version is required and all metrics are recomputed; a forged exported score is ignored. `npm test` covers counts, duplicate/missing/error cases, perfect and wrong predictions and snapshot validation. `npm run test:e2e` covers the current UI, denial and persistence, not live semantic correctness.
 
@@ -35,3 +35,11 @@ Imported model/provenance fields are unverified. The exact dataset/version is re
 ## Tool-name gaps
 
 DeepEval/Ragas are not integrated, Appium/native mobile testing is not implemented, and AWS deployment is not implemented. The project instead has a dependency-light metric harness, current-app Chromium Playwright automation, SQLite query assertions for the optional Python service, and a working free Render deployment. These are explicit scope choices, not claims that the omitted skills are irrelevant to an employer.
+
+## Recorded development run, 2026-11-03
+
+A genuine owner-only deployed run on Gemini 3.5 Flash-Lite scored all 24 cases without execution errors: **19/24 agreement (79.2%), macro F1 0.764** with the authored expectations. Exact-text baseline: 4/24 (16.7%) on the same cases. The app's **View recorded 24-case result (no AI call)** button loads this old snapshot and says it is not a fresh run. Raw evidence: `../evidence/reviewer-development-2026-11-03.json`; recompute offline with `npm run score:reviewer -- evidence/reviewer-development-2026-11-03.json`.
+
+Five disagreements are retained: N05 (changed-subject claim: model said contradicted vs expected not-in-reference); U01 (ambiguous pronoun: supported vs uncertain); U02 (conflicting policies: supported vs uncertain); U03 (unspecified currency: uncertain vs not-in-reference); U06 (missing effective/purchase dates: supported vs uncertain). Some distinctions can be debatable, which is another reason independent annotation is needed. No evaluator prompt was tuned on these cases, and they must not be relabelled a held-out benchmark later.
+
+The most important observed weakness is overconfident support on ambiguous/conflicting references. Quote presence does not fix that. This result is evidence of a testable failure analysis, not a claim of calibrated hallucination detection or suitability for a production release gate. Public JSON evidence is editable and not cryptographic provider attestation.
