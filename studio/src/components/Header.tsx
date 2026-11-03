@@ -83,6 +83,7 @@ export function Header({
       {/* Right controls */}
       <div className="flex items-center gap-2">
         <button
+          aria-label="How This Works"
           onClick={onOpenHowThisWorks}
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg transition-colors cursor-pointer"
         >
@@ -91,6 +92,7 @@ export function Header({
         </button>
 
         <button
+          aria-label="Roadmap"
           onClick={onOpenRoadmap}
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg transition-colors cursor-pointer"
         >

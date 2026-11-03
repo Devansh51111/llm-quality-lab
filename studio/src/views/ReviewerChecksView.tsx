@@ -8,8 +8,14 @@ import {downloadJson,readLocal,writeLocal} from '../utils/advanced';
 const percent=(v:number|null)=>v===null?'Not measured':`${(100*v).toFixed(1)}%`;
 type Saved={predictions:ReviewerPrediction[];origin:string;timestamp:string};
 export function ReviewerChecksView(){
- const [saved,setSaved]=useState<Saved>(()=>readLocal('ql_reviewer_checks_v1',{predictions:[],origin:'not run',timestamp:''}));
- const [busy,setBusy]=useState(false);const [error,setError]=useState('');const stop=useRef(false);
+ const [initial]=useState(()=>{try{
+  const raw=readLocal<unknown>('ql_reviewer_checks_v1',null);if(raw===null)return {saved:{predictions:[],origin:'not run',timestamp:''} as Saved,error:''};
+  const x=raw as Saved;if(typeof x.origin!=='string'||typeof x.timestamp!=='string')throw Error('Invalid saved experiment.');
+  const predictions=parsePredictionImport({...benchmarkSnapshot(),predictions:x.predictions});
+  return {saved:{predictions,origin:x.origin,timestamp:x.timestamp},error:''};
+ }catch{return {saved:{predictions:[],origin:'not run',timestamp:''} as Saved,error:'Saved reviewer results were invalid and were not loaded. Import a valid export or load the recorded result.'}}});
+ const [saved,setSaved]=useState<Saved>(initial.saved);
+ const [busy,setBusy]=useState(false);const [error,setError]=useState(initial.error);const stop=useRef(false);
  const score=scorePredictions(reviewerCases,saved.predictions);const baseline=scorePredictions(reviewerCases,reviewerCases.map(c=>({caseId:c.id,label:exactMatchBaseline(c),claims:[]})));
  const update=(next:Saved)=>{setSaved(next);writeLocal('ql_reviewer_checks_v1',next)};
  async function run(limit:number){if(busy)return;stop.current=false;setBusy(true);setError('');const predictions:ReviewerPrediction[]=[];const timestamp=new Date().toISOString();update({predictions:[],origin:'live model suggestions / synthetic expected labels',timestamp});

@@ -23,5 +23,13 @@ export function benchmarkSnapshot(){return {version:reviewerDatasetVersion,cases
 export function parsePredictionImport(raw:unknown):ReviewerPrediction[]{
  const x=raw as {version?:string;cases?:unknown;predictions?:ReviewerPrediction[]};if(!x||x.version!==reviewerDatasetVersion||JSON.stringify(x.cases)!==JSON.stringify(reviewerCases)||!Array.isArray(x.predictions))throw Error('Import must use the exact published case snapshot and version.');
  // Treat all provenance, model and timing fields as unverified import claims.
- const result=x.predictions.map(p=>{if(!p||typeof p.caseId!=='string')throw Error('Invalid prediction record.');return ({caseId:p.caseId,label:p.label,claims:Array.isArray(p.claims)?p.claims:[],error:typeof p.error==='string'?p.error:undefined})});scorePredictions(reviewerCases,result);return result;
+ if(x.predictions.length>reviewerCases.length)throw Error('Too many prediction records.');
+ const result=x.predictions.map(p=>{
+  if(!p||typeof p.caseId!=='string'||!Array.isArray(p.claims)||p.claims.length>20)throw Error('Invalid prediction record.');
+  if(p.error!==undefined&&(typeof p.error!=='string'||p.error.length>20000))throw Error('Invalid prediction error.');
+  if(p.latencyMs!==undefined&&(typeof p.latencyMs!=='number'||!Number.isFinite(p.latencyMs)||p.latencyMs<0))throw Error('Invalid prediction latency.');
+  if(p.actualModelVersion!==undefined&&(typeof p.actualModelVersion!=='string'||p.actualModelVersion.length>200))throw Error('Invalid prediction model version.');
+  for(const c of p.claims){if(!c||typeof c.claim!=='string'||c.claim.length>4000||typeof c.evidence!=='string'||c.evidence.length>100000||typeof c.reason!=='string'||c.reason.length>20000||!semanticLabels.includes(c.label)||!['exact_quote','no_quote','quote_not_found'].includes(c.evidenceStatus))throw Error('Invalid imported claim.');}
+  return {caseId:p.caseId,label:p.label,claims:p.claims,error:p.error,latencyMs:p.latencyMs,actualModelVersion:p.actualModelVersion};
+ });scorePredictions(reviewerCases,result);return result;
 }
