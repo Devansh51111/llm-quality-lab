@@ -1,3 +1,4 @@
+import {flagStorage} from '../utils/safeStorage';
 import ragasRun from '../../evidence/ragas-offline-2026-11-03.json';
 import recordedRun from '../../evidence/reviewer-development-2026-11-03.json';
 import {useRef,useState} from 'react';
@@ -13,7 +14,7 @@ export function ReviewerChecksView(){
   const x=raw as Saved;if(typeof x.origin!=='string'||typeof x.timestamp!=='string')throw Error('Invalid saved experiment.');
   const predictions=parsePredictionImport({...benchmarkSnapshot(),predictions:x.predictions});
   return {saved:{predictions,origin:x.origin,timestamp:x.timestamp},error:''};
- }catch{return {saved:{predictions:[],origin:'not run',timestamp:''} as Saved,error:'Saved reviewer results were invalid and were not loaded. Import a valid export or load the recorded result.'}}});
+ }catch{flagStorage('ql_reviewer_checks_v1');return {saved:{predictions:[],origin:'not run',timestamp:''} as Saved,error:'Saved reviewer results were invalid and were not loaded. Import a valid export or load the recorded result.'}}});
  const [saved,setSaved]=useState<Saved>(initial.saved);
  const [busy,setBusy]=useState(false);const [error,setError]=useState(initial.error);const stop=useRef(false);
  const score=scorePredictions(reviewerCases,saved.predictions);const baseline=scorePredictions(reviewerCases,reviewerCases.map(c=>({caseId:c.id,label:exactMatchBaseline(c),claims:[]})));

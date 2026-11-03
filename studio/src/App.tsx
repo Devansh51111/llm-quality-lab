@@ -1,3 +1,4 @@
+import {StorageRecovery} from './components/StorageRecovery';
 import {ReviewerChecksView} from './views/ReviewerChecksView';
 import {SemanticReviewView} from './views/SemanticReviewView';
 import {importRun} from './utils/importRun';
@@ -138,7 +139,7 @@ export default function App() {
       actualModelReported
     );
     saveStoredRun(newRun);
-    setAllRuns(getStoredRuns());
+    setAllRuns(previous=>[newRun,...previous.filter(r=>r.runId!==newRun.runId)].slice(0,20));
     setActiveRunIdState(newRun.runId);
     setIsRunningSuite(false);
     setSuiteProgress(null);
@@ -170,7 +171,7 @@ export default function App() {
     );
 
     saveStoredRun(newRun);
-    setAllRuns(getStoredRuns());
+    setAllRuns(previous=>[newRun,...previous.filter(r=>r.runId!==newRun.runId)].slice(0,20));
     setActiveRunIdState(newRun.runId);
     setIsRunningSuite(false);
   };
@@ -255,10 +256,11 @@ export default function App() {
             <details open={!ownerSignedIn&&currentTab!=='overview'}><summary className="cursor-pointer text-cyan-300 font-semibold">{ownerSignedIn?'Connected for live AI':'Connect your private AI access'}</summary><p className="text-xs text-zinc-400 mt-2">Paste your QualityLab website password below, not your Google password or API key. Live AI stays private to you.</p><input aria-label="Owner access password" type="password" autoComplete="current-password" placeholder="Your QualityLab website password" className="ql-input" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)}/><button className="ql-button mt-2" onClick={async()=>{try{const r=await fetch('api/owner/login',{method:'POST',signal:AbortSignal.timeout(90000),headers:{'Content-Type':'application/json'},body:JSON.stringify({password:ownerPassword})});const d=await r.json();setOwnerStatus(r.ok?'Owner signed in for 8 hours.':d.error);setOwnerSignedIn(r.ok);setOwnerPassword('');await refreshServerStatus();}catch{setOwnerStatus('No private backend is connected at this URL.');}}}>Connect live AI</button><button className="ql-button mt-2 ml-2" onClick={async()=>{try{await fetch('api/owner/logout',{method:'POST'});setOwnerStatus('Signed out. Live calls are locked.');setOwnerSignedIn(false);await refreshServerStatus();}catch{setOwnerStatus('Could not reach private backend.');}}}>Sign out</button><p role="status">{ownerStatus}</p></details>
             <p className="text-xs text-zinc-400">Fictional/public inputs only. Use a ready-made test below or open advanced settings to design your own. Free hosting can wake slowly.</p>
             <details className="text-xs text-zinc-500"><summary>Import a saved run (advanced)</summary>
-            <label className="block text-cyan-300">Import full run JSON (unverified evidence, checks recomputed)<input aria-label="Import full run JSON" type="file" accept="application/json,.json" className="block mt-2 max-w-full text-xs" onChange={async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>5000000)throw Error('Maximum file size5MB.');const run=importRun(JSON.parse(await f.text()));saveStoredRun(run);setAllRuns(getStoredRuns());setActiveRunIdState(run.runId);}catch(err){alert(String(err));}e.target.value='';}}/></label>
+            <label className="block text-cyan-300">Import full run JSON (unverified evidence, checks recomputed)<input aria-label="Import full run JSON" type="file" accept="application/json,.json" className="block mt-2 max-w-full text-xs" onChange={async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>5000000)throw Error('Maximum file size5MB.');const run=importRun(JSON.parse(await f.text()));saveStoredRun(run);setAllRuns(previous=>[run,...previous.filter(r=>r.runId!==run.runId)].slice(0,20));setActiveRunIdState(run.runId);}catch(err){alert(String(err));}e.target.value='';}}/></label>
             </details>
             {activeRun?.notes?.includes('IMPORTED_UNVERIFIED')&&<p className="text-amber-300">{activeRun.notes}</p>}
           </div>
+          <StorageRecovery />
           {/* Progress Banner during Live Suite Run */}
           {isRunningSuite && suiteProgress && (
             <div className="mb-6 p-4 bg-cyan-950/70 border border-cyan-700/80 rounded-xl shadow-lg animate-pulse text-xs font-mono text-cyan-200">
@@ -329,7 +331,7 @@ export default function App() {
                   `Lab Single: ${editedCaseConfig.name}`
                 );
                 saveStoredRun(singleRun);
-                setAllRuns(getStoredRuns());
+                setAllRuns(previous=>[singleRun,...previous.filter(r=>r.runId!==singleRun.runId)].slice(0,20));
                 setActiveRunIdState(singleRun.runId);
               }}
             />

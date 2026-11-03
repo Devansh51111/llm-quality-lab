@@ -1,3 +1,4 @@
+import {safeRead,safeWrite} from './safeStorage';
 import type {RunResult} from '../types/qa';
 export type ClaimVerdict='unreviewed'|'supported'|'unsupported'|'uncertain';
 export interface ClaimReview {id:string;claim:string;evidence:string;verdict:ClaimVerdict;note:string}
@@ -7,5 +8,5 @@ export function percentile(values:number[],p:number):number|null{const a=values.
 export function performanceSummary(samples:{latencyMs:number|null;error?:string}[]){const values=samples.filter(s=>!s.error&&s.latencyMs!==null).map(s=>s.latencyMs!);return {attempts:samples.length,successes:values.length,errors:samples.filter(s=>s.error).length,p50:percentile(values,.5),p95:percentile(values,.95),min:values.length?Math.min(...values):null,max:values.length?Math.max(...values):null};}
 export function categorySummary(run:RunResult){const map=new Map<string,{category:string;total:number;passed:number;critical:number}>();for(const r of run.results){const x=map.get(r.category)||{category:r.category,total:0,passed:0,critical:0};x.total++;x.passed+=Number(r.passed);x.critical+=Number(r.isCriticalFailure);map.set(r.category,x);}return [...map.values()];}
 export function downloadJson(name:string,data:unknown){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-export function readLocal<T>(key:string,fallback:T):T{try{return JSON.parse(localStorage.getItem(key)||'null')??fallback;}catch{return fallback;}}
-export function writeLocal(key:string,data:unknown){localStorage.setItem(key,JSON.stringify(data));}
+export function readLocal<T>(key:string,fallback:T):T{return safeRead(key,fallback);}
+export function writeLocal(key:string,data:unknown){return safeWrite(key,data);}
