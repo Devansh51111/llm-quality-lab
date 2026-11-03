@@ -208,16 +208,16 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
         <div>
           <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
             <FlaskConical className="w-5 h-5 text-cyan-400" />
-            Evaluation Lab Workbench
+            Test an answer
           </h1>
           <p className="text-xs text-zinc-400 mt-1">
-            Execute real Gemini API generations, test deterministic rules, and inspect uncalibrated model-judge estimates.
+            Choose a test, ask the AI, then inspect its answer and the checks.
           </p>
         </div>
 
         {/* Quick case picker */}
         <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-500 font-mono">Load Case:</span>
+          <span className="text-sm text-zinc-400">Choose a test</span>
           <select
             value={activeCase.id}
             onChange={(e) => handleSelectCase(e.target.value)}
@@ -233,7 +233,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
         </div>
       </div>
 
-<div className="p-4 border border-cyan-900 rounded-xl"><button disabled={isGenerating||isJudging} className="ql-button" onClick={()=>{if(confirm('Replace the current Lab question, reference and all rules with the fictional refund example? Dataset and saved runs are unchanged.'))loadCase(refundExample());}}>Load complete refund example</button><p className="text-xs text-zinc-400 mt-2">Replaces all Lab inputs together, including clearing the trial duration. Does not modify Datasets or historical runs. Read the answer: expected outcome is not eligible because120calls exceeds the usage limit, despite5days being within7days.</p></div>
+<div className="ql-panel space-y-3"><div className="flex flex-wrap gap-3"><span className="ql-step">1 Choose a test</span><span className="ql-step">2 Run once</span><span className="ql-step">3 Read the evidence</span></div><button disabled={isGenerating||isJudging} className="ql-button" onClick={()=>{loadCase(refundExample());}}>Load complete refund example</button><p className="text-xs text-zinc-400 mt-2">Ready-made examples set the question, reference and checks together. Loading one replaces this form only, never saved history. Refund example expects no refund:120calls exceeds the limit.</p></div>
       {/* Main split workbench: Input Configuration vs Output Inspection */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Case Parameters & Generation Controls */}
@@ -242,7 +242,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
             <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
               <span className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-cyan-400" />
-                Prompt &amp; Grounding Context
+                Your test
               </span>
               <span
                 className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border ${
@@ -257,7 +257,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
 
             {/* Target Question */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-zinc-300">Target Question / Query</label>
+              <label className="text-xs font-semibold text-zinc-300">Question for the AI</label>
               <textarea
                 rows={2}
                 value={question}
@@ -271,9 +271,9 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold text-zinc-300">
-                  Reference Context (Fictional Grounding Source)
+                  Reference facts the answer must follow
                 </label>
-                <span className="text-[10px] text-zinc-500 font-mono">Zero web/maps grounding</span>
+                <span className="text-[10px] text-zinc-500 font-mono">No web search</span>
               </div>
               <textarea
                 rows={4}
@@ -284,6 +284,8 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
               />
             </div>
 
+<div className="text-sm rounded-lg bg-cyan-950/20 p-3 text-cyan-100">This test checks {requiredPhrasesText.split(',').filter(x=>x.trim()).length} required phrases, {prohibitedPhrasesText.split(',').filter(x=>x.trim()).length} forbidden phrases{durationText?` and a ${durationText}-day duration`: ''}. Passing rules is not proof the whole answer is correct.</div>
+            <details className="ql-advanced"><summary>Advanced: edit checks and model review</summary>
             {/* Deterministic Rules Config */}
             <div className="p-3.5 bg-zinc-950/80 rounded-lg border border-zinc-800/80 space-y-3">
               <div className="text-[11px] font-mono text-zinc-400 font-semibold uppercase">
@@ -366,6 +368,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
               <Cpu className="w-4 h-4 text-purple-400 shrink-0" />
             </div>
 
+            </details>
             {/* Actions Bar */}
             <div className="pt-2 flex items-center gap-3">
               <button
@@ -376,12 +379,12 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Invoking gemini-3.5-flash-lite...</span>
+                    <span>Waiting for the AI answer...</span>
                   </>
                 ) : (
                   <>
                     <Play className="w-4 h-4 fill-current" />
-                    <span>Generate Answer (gemini-3.5-flash-lite)</span>
+                    <span>Generate answer</span>
                   </>
                 )}
               </button>
@@ -393,7 +396,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
                 title="Test against pre-computed synthetic sample"
               >
                 <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                <span>Replay Synthetic</span>
+                <span>Try sample (not live AI)</span>
               </button>
             </div>
           </div>
@@ -412,7 +415,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
                 {runError}
               </p>
               <p className="text-[11px] text-zinc-400 font-sans">
-                Note: As instructed, when no free model/runtime is configured in AI Studio, QualityLab surfaces the authentic runtime error rather than masking it with synthetic fixtures.
+                The request did not complete. Your rules were not scored. Sign in first; if a quota or provider error appears, stop rather than retry repeatedly.
               </p>
             </div>
           )}
@@ -458,6 +461,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
                 </div>
               </div>
 
+<p className="text-sm text-zinc-300">{latestResult.passed?'The answer meets every rule in this test. Read it for meaning too.':'One or more test rules did not match. Check the rule and the answer before deciding which needs fixing.'}</p>
               {/* Exact Actual Output */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
@@ -577,9 +581,8 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
             <div className="p-10 bg-zinc-900/50 border border-zinc-800 border-dashed rounded-xl text-center text-zinc-500 text-xs space-y-3">
               <FlaskConical className="w-8 h-8 mx-auto text-zinc-600" />
               <div>
-                <span className="font-semibold text-zinc-300 block">Workbench Idle</span>
-                Click &quot;Generate Answer&quot; to execute real Gemini API inference or &quot;Replay Synthetic&quot; to test rules against sample output.
-              </div>
+                <span className="font-semibold text-zinc-300 block">Ready when you are</span>
+                Choose an example, then press Generate answer. Results show what passed, what failed and why.</div>
             </div>
           )}
         </div>

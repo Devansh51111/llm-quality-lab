@@ -9,7 +9,7 @@ try:
  for _ in range(60):
   try:req('/api/status');break
   except:time.sleep(.1)
- for path in ['/api/generate','/api/judge','/api/conversation']:assert req(path,{'question':'fictional'})[0]==401
+ for path in ['/api/generate','/api/judge','/api/conversation','/api/claim-review']:assert req(path,{'question':'fictional'})[0]==401
  assert req('/api/owner/login',{'password':secret},origin='https://untrusted.invalid')[0]==403
  jar=http.cookiejar.CookieJar();op=urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
  assert req('/api/owner/login',{'password':secret},op)[0]==200

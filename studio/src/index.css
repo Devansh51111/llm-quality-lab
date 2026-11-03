@@ -64,3 +64,13 @@ main select { width:100%; }
 textarea.ql-input { min-height:100px; }
 .ql-button { min-height:44px; padding:10px 16px; border:1px solid #3f3f46; border-radius:8px; color:#67e8f9; background:#18181b; font-size:13px; }
 .ql-button:disabled { opacity:.45; cursor:not-allowed; }
+.ql-panel {padding:24px;background:linear-gradient(145deg,#16181c,#111216);border:1px solid #303239;border-radius:18px;box-shadow:0 8px 30px #00000014;}
+.ql-eyebrow {font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#67e8f9;}
+.ql-primary {min-height:48px;padding:12px 22px;background:#22d3ee;color:#082f49;font-weight:650;border-radius:10px;}
+.ql-primary:disabled {opacity:.45;}
+.ql-step {font-size:13px;padding:7px 12px;border-radius:30px;background:#21252d;color:#d4d4d8;}
+.ql-advanced {border-top:1px solid #303239;padding-top:16px;}
+.ql-advanced summary {cursor:pointer;min-height:44px;color:#a1a1aa;font-size:13px;}
+.ql-advanced[open] > div {margin-top:12px;}
+main label {line-height:1.5;}
+@media(max-width:639px){.ql-panel{padding:18px;}.ql-step{font-size:12px;}}

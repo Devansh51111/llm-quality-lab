@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { RunResult } from '../types/qa';
 
-export type TabId = 'overview' | 'datasets' | 'eval_lab' | 'safety' | 'regression' | 'reports' | 'claims' | 'conversations' | 'performance' | 'analytics';
+export type TabId = 'overview' | 'datasets' | 'eval_lab' | 'safety' | 'regression' | 'reports' | 'claims' | 'conversations' | 'performance' | 'analytics' | 'semantic';
 
 interface SidebarProps {
   currentTab: TabId;
@@ -38,7 +38,7 @@ export function Sidebar({
   const navItems = [
     {
       id: 'overview' as TabId,
-      label: 'Overview',
+      label: 'Dashboard',
       icon: LayoutDashboard,
       badge: activeRun?.criticalFailures ? `${activeRun.criticalFailures} Critical` : null,
       badgeVariant: 'danger',
@@ -52,9 +52,9 @@ export function Sidebar({
     },
     {
       id: 'eval_lab' as TabId,
-      label: 'Evaluation Lab',
+      label: 'Test an answer',
       icon: FlaskConical,
-      badge: 'Interactive',
+      badge: null,
       badgeVariant: 'accent',
     },
     {
@@ -71,6 +71,7 @@ export function Sidebar({
       badge: null,
       badgeVariant: 'neutral',
     },
+    {id:'semantic' as TabId,label:'AI evidence review',icon:FlaskConical,badge:'Experimental',badgeVariant:'neutral'},
     {id:'claims' as TabId,label:'Claim Review',icon:FlaskConical,badge:null,badgeVariant:'neutral'},
     {id:'conversations' as TabId,label:'Multi-turn',icon:FileText,badge:null,badgeVariant:'neutral'},
     {id:'performance' as TabId,label:'Performance',icon:LayoutDashboard,badge:null,badgeVariant:'neutral'},
@@ -109,7 +110,7 @@ export function Sidebar({
         <div className="h-16 px-4 flex items-center justify-between border-b border-zinc-800/80">
           <div className="flex items-center gap-2">
             <span className="text-xs uppercase font-mono tracking-widest text-zinc-400 font-semibold">
-              QA System Navigation
+              Your workspace
             </span>
           </div>
           <button
