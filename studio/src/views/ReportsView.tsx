@@ -31,6 +31,8 @@ export function ReportsView({
   const [copiedJson, setCopiedJson] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
+  const measuredTime = (value: number | null) => value === null ? 'Not measured' : `${value} ms`;
+
   const generateMarkdownReport = (run: RunResult): string => {
     return `# LLM QualityLab - Audit Report
 **Run ID:** \`${run.runId}\`
@@ -42,6 +44,9 @@ export function ReportsView({
 
 ---
 
+## Evidence limits
+${run.notes || 'Browser-local report; not independently attested or tamper-proof.'}
+
 ## Executive Summary
 - **Deterministic Rules Pass Rate:** **${run.deterministicPassRate}%** (*Strict rule compliance; not labeled accuracy or ground truth*)
 - **Release Gate Decision:** **${run.releaseGateStatus}** (${run.releaseGateReason})
@@ -49,7 +54,7 @@ export function ReportsView({
 - **Passed Cases:** ${run.passedCases}
 - **Failed Cases:** ${run.failedCases}
 - **Critical Failures:** ${run.criticalFailures}
-- **Average Wall-Clock Latency:** ${run.averageLatencyMs}ms (Min: ${run.minLatencyMs}ms, Max: ${run.maxLatencyMs}ms)
+- **Average Wall-Clock Latency:** ${measuredTime(run.averageLatencyMs)} (Min: ${measuredTime(run.minLatencyMs)}, Max: ${measuredTime(run.maxLatencyMs)})
 
 ---
 
@@ -59,7 +64,7 @@ ${run.results
     (r, i) => `### ${i + 1}. [${r.severity.toUpperCase()}] ${r.testCaseName}
 - **Status:** ${r.passed ? 'PASSED' : r.isCriticalFailure ? 'CRITICAL FAILURE' : 'FAILED'}
 - **Category:** ${r.category}
-- **Observed Latency:** ${r.latencyMs}ms
+- **Observed Latency:** ${measuredTime(r.latencyMs)}
 - **Question:** "${r.question}"
 - **Failure Reasons:** ${r.failureReasons.length > 0 ? r.failureReasons.join(', ') : 'None (All rules met)'}
 - **Actual Output:**
@@ -96,6 +101,8 @@ ${r.actualOutput}
         passedCases: run.passedCases,
         failedCases: run.failedCases,
         criticalFailures: run.criticalFailures,
+        executionErrorsCount: run.executionErrorsCount,
+        releaseGateReason: run.releaseGateReason,
         averageLatencyMs: run.averageLatencyMs,
         minLatencyMs: run.minLatencyMs,
         maxLatencyMs: run.maxLatencyMs,
@@ -139,7 +146,7 @@ ${r.actualOutput}
             Audit Reports &amp; Provenance Export
           </h1>
           <p className="text-xs text-zinc-400 mt-1">
-            Export machine-readable JSON reports with complete provenance (timestamps, content fingerprint, and model parameters) and markdown summaries.
+            Export case snapshots, rule results, recorded timestamps, dataset fingerprints and model identifiers. Browser-local records are not independently attested or tamper-proof.
           </p>
         </div>
 
@@ -209,7 +216,7 @@ ${r.actualOutput}
           <div className="p-5 bg-zinc-900/80 border border-zinc-800 rounded-xl shadow-md space-y-4">
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
               <Fingerprint className="w-4 h-4 text-cyan-400" />
-              Verifiable Run Provenance
+              Recorded Run Provenance
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">

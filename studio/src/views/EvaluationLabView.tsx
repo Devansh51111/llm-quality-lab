@@ -86,6 +86,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
     try {
       const response = await fetch('api/generate', {
         method: 'POST',
+          signal: AbortSignal.timeout(90000),
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -117,6 +118,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
         try {
           const judgeRes = await fetch('api/judge', {
             method: 'POST',
+          signal: AbortSignal.timeout(90000),
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               question: question.trim(),
