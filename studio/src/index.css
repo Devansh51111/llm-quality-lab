@@ -74,3 +74,8 @@ textarea.ql-input { min-height:100px; }
 .ql-advanced[open] > div {margin-top:12px;}
 main label {line-height:1.5;}
 @media(max-width:639px){.ql-panel{padding:18px;}.ql-step{font-size:12px;}}
+.ql-card{padding:18px;background:#121317;border:1px solid #26282e;border-radius:14px;}
+.ql-label{font-size:12px;color:#a1a1aa;}
+.ql-big{font-size:28px;font-weight:600;margin-top:6px;text-transform:capitalize;}
+.ql-sub{font-size:12px;color:#8b8b95;margin-top:6px;line-height:1.5;}
+.ql-pill{font-size:11px;padding:2px 8px;border-radius:20px;background:#1e2026;border:1px solid #2d3038;}

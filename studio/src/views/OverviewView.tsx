@@ -65,185 +65,39 @@ export function OverviewView({
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Top Banner / Actions Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 bg-zinc-900/90 border border-zinc-800 rounded-xl shadow-lg">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-            Quality Assurance Overview
-          </h1>
-          <p className="text-xs text-zinc-400 mt-1">
-            Deterministic rule validation, critical release gating, and latency tracking.
-          </p>
+          <h1 className="text-2xl font-semibold text-white">Quality overview</h1>
+          <p className="text-sm text-zinc-400 mt-1">{activeRun?`Latest run: ${activeRun.runName} · ${new Date(activeRun.timestamp).toLocaleString()}`:'No run yet. Run a suite or test one answer to fill this page with real results.'}</p>
         </div>
-
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <button
-            onClick={onRunLiveSuite}
-            disabled={isRunningSuite}
-            className="flex items-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-zinc-950 font-semibold text-xs rounded-lg transition-all shadow-md shadow-cyan-950/40 cursor-pointer disabled:cursor-not-allowed"
-          >
-            {isRunningSuite ? (
-              <>
-                <div className="w-3.5 h-3.5 border-2 border-zinc-950 border-t-transparent rounded-full animate-spin" />
-                <span>Running Gemini API ({cases.length} cases)...</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-3.5 h-3.5 fill-current" />
-                <span>Run Live Suite (gemini-3.5-flash-lite)</span>
-              </>
-            )}
-          </button>
-
-          <button
-            onClick={onRunSampleReplaySuite}
-            disabled={isRunningSuite}
-            className="flex items-center gap-2 px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 text-zinc-200 font-medium text-xs rounded-lg border border-zinc-700 transition-colors cursor-pointer disabled:cursor-not-allowed"
-            title="Replays pre-computed synthetic outputs without calling live Gemini API"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-            <span>Replay Synthetic Fixtures</span>
-          </button>
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={onRunLiveSuite} disabled={isRunningSuite} className="ql-primary" style={{minHeight:40,padding:'8px 16px',fontSize:13}}>{isRunningSuite?`Running ${cases.length} cases...`:'Run live suite'}</button>
+          <button onClick={onRunSampleReplaySuite} disabled={isRunningSuite} className="ql-button" title="Replays pre-written synthetic outputs without calling the AI">Replay sample (not live AI)</button>
         </div>
       </div>
 
-      {/* Overview Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-        {/* 1. Deterministic Pass Rate */}
-        <div className="p-4 bg-zinc-900/70 border border-zinc-800 rounded-xl">
-          <div className="flex items-center justify-between text-xs font-mono text-zinc-400 mb-2">
-            <span>Deterministic Pass Rate</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold font-mono text-white">
-              {activeRun ? `${activeRun.deterministicPassRate}%` : '0.0%'}
-            </span>
-            <span className="text-xs text-zinc-500 font-mono">
-              {activeRun ? `${activeRun.passedCases}/${activeRun.totalCases} passed` : 'No run recorded'}
-            </span>
-          </div>
-          <p className="text-[10px] text-zinc-500 mt-2 font-mono">
-            *Strict rule compliance. Not labeled accuracy or truthfulness.
-          </p>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="ql-card"><p className="ql-label">Release gate</p><p className={`ql-big ${!activeRun?'text-zinc-500':activeRun.releaseGateStatus==='BLOCKED'?'text-red-400':'text-emerald-400'}`}>{activeRun?activeRun.releaseGateStatus.toLowerCase():'pending'}</p><p className="ql-sub">{activeRun?activeRun.releaseGateReason:'Needs a run with 90% rule pass rate, no critical failure and no execution error.'}</p></div>
+        <div className="ql-card"><p className="ql-label">Critical failures</p><p className={`ql-big ${activeRun?.criticalFailures?'text-red-400':'text-white'}`}>{activeRun?activeRun.criticalFailures:'-'}</p><p className="ql-sub">{activeRun?`${activeRun.failedCases} failing of ${activeRun.totalCases} tests`:'Any critical failure blocks release.'}</p></div>
+        <div className="ql-card"><p className="ql-label">Response time</p><p className="ql-big text-white">{activeRun&&activeRun.runOrigin!=='synthetic_sample_replay'&&activeRun.averageLatencyMs!==null?`${activeRun.averageLatencyMs}ms`:'-'}</p><p className="ql-sub">{activeRun?(activeRun.runOrigin==='live_gemini_api'?`Live average · ${activeRun.requestedModel}`:'Sample replay: time not measured'):'Measured only on live runs.'}</p></div>
+      </div>
 
-        {/* 2. Release Gate Decision */}
-        <div
-          className={`p-4 border rounded-xl ${
-            !activeRun
-              ? 'bg-zinc-900/70 border-zinc-800'
-              : activeRun.releaseGateStatus === 'BLOCKED'
-              ? 'bg-red-950/40 border-red-800/80'
-              : 'bg-emerald-950/40 border-emerald-800/80'
-          }`}
-        >
-          <div className="flex items-center justify-between text-xs font-mono text-zinc-400 mb-2">
-            <span>Release Gate</span>
-            {activeRun?.releaseGateStatus === 'BLOCKED' ? (
-              <ShieldAlert className="w-4 h-4 text-red-400" />
-            ) : activeRun?.releaseGateStatus === 'PASSED' ? (
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            ) : (
-              <AlertOctagon className="w-4 h-4 text-zinc-500" />
-            )}
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span
-              className={`text-2xl font-extrabold font-mono ${
-                !activeRun
-                  ? 'text-zinc-500'
-                  : activeRun.releaseGateStatus === 'BLOCKED'
-                  ? 'text-red-400'
-                  : 'text-emerald-400'
-              }`}
-            >
-              {activeRun ? activeRun.releaseGateStatus : 'PENDING'}
-            </span>
-          </div>
-          <p className="text-[10px] text-zinc-400 mt-2 font-mono">
-            {activeRun
-              ? activeRun.releaseGateReason
-              : 'Requires totalCases > 0, pass rate >= 90%, 0 critical failures, and 0 execution errors.'}
-          </p>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
+        <div className="ql-card lg:col-span-2 flex flex-col items-center text-center">
+          <p className="ql-label self-start">Rule pass rate</p>
+          {(()=>{const pct=activeRun?activeRun.deterministicPassRate:0;const r=70,c=2*Math.PI*r;return <svg viewBox="0 0 180 180" className="w-44 h-44 my-3" role="img" aria-label={activeRun?`${pct}% of tests passed their rules`:'No run recorded'}><circle cx="90" cy="90" r={r} fill="none" stroke={activeRun?'#f43f5e':'#27272a'} strokeWidth="14"/><circle cx="90" cy="90" r={r} fill="none" stroke="#10b981" strokeWidth="14" strokeLinecap="round" strokeDasharray={`${c*pct/100} ${c}`} transform="rotate(-90 90 90)"/><text x="90" y="92" textAnchor="middle" fill="#fff" fontSize="30" fontWeight="600">{activeRun?`${pct}%`:'-'}</text><text x="90" y="116" textAnchor="middle" fill="#a1a1aa" fontSize="12">{activeRun?`${activeRun.passedCases}/${activeRun.totalCases} passed`:'no run'}</text></svg>})()}
+          <p className="ql-sub">Share of tests that met their written rules. Not accuracy or truthfulness.</p>
         </div>
+        <div className="ql-card lg:col-span-3">
+          <p className="ql-label">Top failing outputs</p>
+          {!activeRun?<p className="ql-sub mt-4">Nothing to show yet.</p>:activeRun.results.filter(r=>!r.passed).length===0?<p className="ql-sub mt-4">No failing tests in this run.</p>:<div className="mt-3 divide-y divide-zinc-800">{activeRun.results.filter(r=>!r.passed).sort((x,y)=>Number(y.isCriticalFailure)-Number(x.isCriticalFailure)).slice(0,4).map(r=><button key={r.testCaseId} className="w-full text-left py-3 flex flex-col gap-1 hover:bg-zinc-800/30 rounded" onClick={()=>onNavigateToCaseInLab(r.testCaseId)}><span className="flex flex-wrap items-center gap-2"><span className={`ql-pill ${r.isCriticalFailure?'text-red-300':'text-amber-300'}`}>{r.isCriticalFailure?'critical':r.severity}</span><span className="text-sm text-zinc-100">{r.testCaseName}</span></span><span className="text-xs text-zinc-400">{r.failureReasons[0]||r.executionErrorMessage||'A rule did not match.'}</span><span className="text-xs text-zinc-500 line-clamp-2">{r.actualOutput||'No output recorded.'}</span></button>)}</div>}
+        </div>
+      </div>
 
-        {/* 3. Critical Failures */}
-        <div className="p-4 bg-zinc-900/70 border border-zinc-800 rounded-xl">
-          <div className="flex items-center justify-between text-xs font-mono text-zinc-400 mb-2">
-            <span>Critical Failures</span>
-            <AlertTriangle className="w-4 h-4 text-amber-400" />
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span
-              className={`text-2xl font-bold font-mono ${
-                activeRun?.criticalFailures ? 'text-red-400 font-extrabold' : 'text-zinc-100'
-              }`}
-            >
-              {activeRun ? activeRun.criticalFailures : 0}
-            </span>
-            <span className="text-xs text-zinc-500 font-mono">
-              of {activeRun ? activeRun.failedCases : 0} total failures
-            </span>
-          </div>
-          <p className="text-[10px] text-zinc-500 mt-2 font-mono">
-            {activeRun?.executionErrorsCount
-              ? `${activeRun.executionErrorsCount} model/transport errors recorded`
-              : 'Any critical failure blocks release.'}
-          </p>
-        </div>
-
-        {/* 4. Response Time */}
-        <div className="p-4 bg-zinc-900/70 border border-zinc-800 rounded-xl">
-          <div className="flex items-center justify-between text-xs font-mono text-zinc-400 mb-2">
-            <span>Average Wall Latency</span>
-            <Clock className="w-4 h-4 text-cyan-400" />
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold font-mono text-white">
-              {activeRun
-                ? activeRun.runOrigin === 'synthetic_sample_replay'
-                  ? 'Unmeasured'
-                  : activeRun.averageLatencyMs !== null
-                  ? `${activeRun.averageLatencyMs}ms`
-                  : 'N/A'
-                : '—'}
-            </span>
-            {activeRun && activeRun.runOrigin !== 'synthetic_sample_replay' && activeRun.averageLatencyMs !== null && (
-              <span className="text-[10px] text-zinc-500 font-mono">
-                ({activeRun.minLatencyMs}–{activeRun.maxLatencyMs}ms)
-              </span>
-            )}
-          </div>
-          <p className="text-[10px] text-zinc-500 mt-2 font-mono">
-            {activeRun?.runOrigin === 'synthetic_sample_replay'
-              ? 'Sample fixture: latency unmeasured (no chart from fixtures)'
-              : 'Live round-trip wall-clock measurement.'}
-          </p>
-        </div>
-
-        {/* 5. Run Origin */}
-        <div className="p-4 bg-zinc-900/70 border border-zinc-800 rounded-xl">
-          <div className="flex items-center justify-between text-xs font-mono text-zinc-400 mb-2">
-            <span>Active Run Origin</span>
-            <Activity className="w-4 h-4 text-purple-400" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold font-mono text-zinc-200 truncate">
-              {activeRun
-                ? activeRun.runOrigin === 'live_gemini_api'
-                  ? 'Live Gemini API'
-                  : 'Sample Replay (Timing N/A)'
-                : 'No Run Data'}
-            </span>
-            <span className="text-[10px] text-zinc-400 font-mono mt-0.5 truncate">
-              {activeRun ? `${activeRun.requestedModel} (${activeRun.actualModelVersion})` : 'Awaiting trigger'}
-            </span>
-          </div>
-          <p className="text-[10px] text-zinc-500 mt-2 font-mono truncate" title={activeRun?.datasetFingerprint}>
-            {activeRun ? activeRun.datasetFingerprint : 'No dataset fingerprint'}
-          </p>
-        </div>
+      <div className="ql-card">
+        <p className="ql-label">Pass rate by run</p>
+        {allRuns.length<2?<p className="ql-sub mt-3">Needs at least two saved runs to draw a trend. Saved: {allRuns.length}.</p>:(()=>{const rs=[...allRuns].reverse().slice(-20);const W=600,H=140,pad=24;const pts=rs.map((r,i)=>[pad+i*(W-2*pad)/(rs.length-1),H-pad-(H-2*pad)*r.deterministicPassRate/100]);return <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-40 mt-2" role="img" aria-label="Rule pass rate for each saved run, oldest to newest"><line x1={pad} x2={W-pad} y1={H-pad} y2={H-pad} stroke="#27272a"/><line x1={pad} x2={W-pad} y1={pad} y2={pad} stroke="#27272a" strokeDasharray="3 4"/><text x="2" y={pad+4} fill="#71717a" fontSize="10">100%</text><text x="8" y={H-pad+4} fill="#71717a" fontSize="10">0</text><polyline fill="none" stroke="#8b5cf6" strokeWidth="2.5" points={pts.map(q=>q.join(',')).join(' ')}/>{pts.map((q,i)=><circle key={i} cx={q[0]} cy={q[1]} r="3.5" fill={rs[i].runOrigin==='live_gemini_api'?'#10b981':'#a78bfa'}><title>{`${rs[i].runName}: ${rs[i].deterministicPassRate}% (${rs[i].runOrigin==='live_gemini_api'?'live':'sample'})`}</title></circle>)}</svg>})()}
+        <p className="ql-sub">Oldest to newest, up to 20 runs. Green dots are live runs, purple are sample replays.</p>
       </div>
 
       {/* Main Investigation Panel */}
@@ -252,7 +106,7 @@ export function OverviewView({
         <div className="p-4 sm:p-5 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <span>Test Suite Execution &amp; Failure Drilldown</span>
+              <span>All tests in this run</span>
               {activeRun && (
                 <span className="text-xs font-mono font-normal text-zinc-400">
                   ({filteredResults.length} of {activeRun.totalCases} shown)

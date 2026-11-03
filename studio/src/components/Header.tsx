@@ -46,7 +46,7 @@ export function Header({
       </div>
 
       {/* Middle status badges */}
-      <div className="hidden xl:flex items-center gap-2.5 min-w-0">
+      <div className="hidden 2xl:flex items-center gap-2.5 min-w-0">
         {/* Runtime tier badge */}
         <div
           className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-900 border border-zinc-800 rounded-md text-xs font-mono text-zinc-300"
