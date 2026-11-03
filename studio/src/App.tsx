@@ -1,3 +1,4 @@
+import {ReviewerChecksView} from './views/ReviewerChecksView';
 import {SemanticReviewView} from './views/SemanticReviewView';
 import {importRun} from './utils/importRun';
 import {ClaimsView} from './views/ClaimsView';
@@ -279,6 +280,7 @@ export default function App() {
             </div>
           )}
 
+          {currentTab === 'reviewer_checks' && <ReviewerChecksView/>}
           {currentTab === 'semantic' && <SemanticReviewView activeRun={activeRun}/>}
           {currentTab === 'claims' && <ClaimsView activeRun={activeRun}/>}
           {currentTab === 'conversations' && <ConversationsView/>}

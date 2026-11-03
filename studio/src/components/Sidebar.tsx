@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { RunResult } from '../types/qa';
 
-export type TabId = 'overview' | 'datasets' | 'eval_lab' | 'safety' | 'regression' | 'reports' | 'claims' | 'conversations' | 'performance' | 'analytics' | 'semantic';
+export type TabId = 'overview' | 'datasets' | 'eval_lab' | 'safety' | 'regression' | 'reports' | 'claims' | 'conversations' | 'performance' | 'analytics' | 'semantic' | 'reviewer_checks';
 
 interface SidebarProps {
   currentTab: TabId;
@@ -71,6 +71,7 @@ export function Sidebar({
       badge: null,
       badgeVariant: 'neutral',
     },
+    {id:'reviewer_checks' as TabId,label:'Reviewer checks',icon:FlaskConical,badge:'24 fixtures',badgeVariant:'neutral'},
     {id:'semantic' as TabId,label:'AI evidence review',icon:FlaskConical,badge:'Experimental',badgeVariant:'neutral'},
     {id:'claims' as TabId,label:'Claim Review',icon:FlaskConical,badge:null,badgeVariant:'neutral'},
     {id:'conversations' as TabId,label:'Multi-turn',icon:FileText,badge:null,badgeVariant:'neutral'},

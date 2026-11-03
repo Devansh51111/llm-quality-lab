@@ -6,9 +6,15 @@ A working, local-first QA framework for saved LLM responses. It makes test expec
 
 ## Studio 0.3 integrated source and private real-AI preview
 
-The [`studio/`](studio/) folder adds the dark React/TypeScript dashboard and server-side Gemini adapter used in the private owner-only AI Studio preview. Two genuine Gemini 3.5 Flash-Lite responses were observed on fictional inputs; this is connection evidence, not a benchmark. Historical evidence and its original weak duration-check caveat are preserved in [`studio/evidence/`](studio/evidence/). Source now integrates all eight module areas at a prototype level: response checks, datasets, human claim review, heuristic safety, provider-native multi-turn transport, sequential performance experiments, regression and analytics. New unit and browser checks cover their real functions; live multi-turn/performance certification and standalone owner-only inference hosting remain pending.
+The [`studio/`](studio/) folder contains the current React/TypeScript app with an Express server and owner-only Gemini inference. **Current hosted app:** https://llm-quality-lab.onrender.com/ . Public UI, private model calls; do not share the owner password. Render Free can sleep and start slowly. The separate Pages demo below is the older synthetic-only interface.
 
-Live inference remains private. The public Pages demo below is still synthetic-only. The exported server is local-only by default and must not be exposed publicly without real access controls. See [Studio setup, honest limits and interview demo](studio/README.md).
+Implemented prototype modules: deterministic response contracts, editable datasets, experimental AI evidence suggestions plus human review, heuristic safety scans, native multi-turn requests, small sequential timing experiments, same-snapshot regressions and analytics/export. Saved Studio data is browser-local. Earlier live connection/multi-turn/timing evidence in [`studio/evidence/`](studio/evidence/) is smoke evidence, not a quality benchmark.
+
+**Reviewer checks** adds 24 AI-authored fictional development cases, a narrow exact-text baseline, confusion matrix, per-class precision/recall/F1, error/coverage counts and results export. These expected labels are not independent human ground truth or a held-out test set. Initial model agreement is unmeasured until an actual run. See [`studio/evaluation/README.md`](studio/evaluation/README.md) for provenance and independent-validation steps.
+
+CI runs Python unit/SQL/API tests, the Promptfoo synthetic bridge, Studio unit/typecheck/build checks, owner-auth integration and current-Studio Playwright Chromium E2E at 320/390/1280. Browser tests use a local keyless server, not live model assertions. This is portfolio QA evidence, not production-grade certification.
+
+See [Studio setup, honest limits and interview demo](studio/README.md). Never place a key or password in a browser build or commit.
 
 ## Try without installing anything
 

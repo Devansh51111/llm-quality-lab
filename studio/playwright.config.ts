@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'./tests/e2e',timeout:30000,fullyParallel:false,workers:1,retries:0,reporter:'list',use:{baseURL:'http://127.0.0.1:3003',trace:'retain-on-failure',screenshot:'only-on-failure'},webServer:{command:'npm run build && npm start',url:'http://127.0.0.1:3003/api/status',reuseExistingServer:false,env:{NODE_ENV:'production',PORT:'3003',REQUIRE_OWNER_AUTH:'true',OWNER_PASSWORD:'local-test-only-secret-not-a-real-login',GEMINI_API_KEY:''}}});

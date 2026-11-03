@@ -43,7 +43,7 @@ Required and prohibited phrases are substring rules. The day-duration contract a
 
 Citation marker presence does not prove entailment or support. Privacy regexes miss real identifiers and can flag innocent text. The model judge is an uncalibrated estimate. Browser localStorage is editable by its owner, not a tamper-proof audit ledger. A content fingerprint is not cryptographic provenance. No real customer data, PII or production secrets belong in this demo.
 
-Multi-turn transport, sequential performance experiments and human claim review are implemented in source. Actual live multi-turn/performance provider certification remains pending. Calibrated hallucination scoring, concurrent load testing, Appium/mobile automation and AWS deployment remain roadmap work. This is a working portfolio prototype, not a complete enterprise platform.
+Multi-turn transport, sequential performance experiments and human claim review are implemented in source. Small live multi-turn/performance smoke evidence is recorded below; broader certification is not established. Calibrated hallucination scoring, concurrent load testing, Appium/mobile automation and AWS deployment remain roadmap work. This is a working portfolio prototype, not a complete enterprise platform.
 
 ## Interview demonstration
 
@@ -64,12 +64,12 @@ Historical real generation evidence is under `evidence/`, with the weak original
 | Golden datasets | CRUD/import/export, exact snapshots, duration contracts | Shape checks, empty-state and migration tests. Local storage, not enterprise version control. |
 | Unsupported claims | Split candidate text, suggest lexical evidence, explicit human verdicts/reasons and export | Browser interaction verified. Human review, no automatic hallucination accuracy. |
 | Safety | Configured pattern and phrase scanner with inspectable matches | Heuristic only, no preventative guarantee. |
-| Multi-turn | Provider-native prior user/model contents, locally saved transcript and export | Payload-order tests and no-key error verified. Live multi-turn answer not yet certified. |
-| Performance | 1-5 sequential requests, measured client time, nearest-rank p50/p95/errors, stop-on-error | Stats/error workflow tested. Not concurrent load/TTFT/tokens per second. Live multi-request run pending. |
+| Multi-turn | Provider-native prior user/model contents, locally saved transcript and export | Payload-order tests and no-key error verified. One recorded live two-turn smoke example, not a memory benchmark. |
+| Performance | 1-5 sequential requests, measured client time, nearest-rank p50/p95/errors, stop-on-error | Stats/error workflow tested. Not concurrent load/TTFT/tokens per second. Two live sequential samples recorded below, not reliable tail-latency evidence. |
 | Regression | Two distinct runs, exact matching snapshots, complete case IDs, pass/fail deltas | Contract consistency tests. Not tamper-proof audit history. |
 | Analytics | Active-run category counts, actual stored ledger and JSON export | Unit tests, no fake trend data or cross-contract improvement claim. |
 
-Static Studio supports full-report import. Imported origin/model/timing are unverified claims and are labelled as such; declared checks are recomputed from the snapshot, never trusted from imported `passed:true`. Old reports lacking a full dataset snapshot are rejected. Backend-dependent buttons show honest unavailable errors on a static site, not synthetic stand-ins. A private backend/owner-only access and service consent are still needed for standalone live inference.
+Static Studio supports full-report import. Imported origin/model/timing are unverified claims and are labelled as such; declared checks are recomputed from the snapshot, never trusted from imported `passed:true`. Old reports lacking a full dataset snapshot are rejected. Backend-dependent buttons show honest unavailable errors on a static site, not synthetic stand-ins. The current hosted backend below has owner-only access; a static build alone cannot provide inference.
 
 ## Private hosted backend
 Production fails closed: set OWNER_PASSWORD (at least16characters, use a generated secret) and a server-only GEMINI_API_KEY. Never put either in a VITE_ variable or commit. Owner sessions use signed HttpOnly Secure SameSite=Strict cookies (8hours); cross-origin POST is denied; login capped5attempts/15min/IP and owner model requests30/hour (in-memory, resets on restart). This is a single-owner portfolio prototype, not enterprise identity management or durable abuse accounting. Do not share the owner password.
@@ -96,3 +96,11 @@ The module coverage is a working single-owner portfolio prototype: rule-based re
 4. Multi-turn: introduce a fictional nickname and ask it again without restating it. Inspect/export the actual transcript.
 5. Performance: choose1or2requests only. Read errors separately from latency. Do not describe this as load testing.
 6. Analytics/Reports: inspect exact run IDs and snapshots; export. Regression allows only comparable distinct snapshots. Sign out after the demo.
+
+## Reviewer experiment and current-app automation
+
+The **Reviewer checks** page provides 24 AI-authored fictional cases with four expected categories, comparison to an exact-text baseline, confusion matrix, per-class metrics, separate errors/missing coverage and snapshot-checked import/export. No independent human labels or held-out validation are claimed. Read [evaluation provenance and next validation steps](evaluation/README.md).
+
+Run `npm run test:e2e` after `npx playwright install chromium`. CI installs Chromium and runs the current Studio at 320/390/1280 against a keyless authenticated local server. It checks synthetic replay, persisted state, navigation, model access denial, reviewer error/coverage feedback and horizontal overflow. These tests do not establish live model correctness. The separate older `tests/browser_smoke.py` covers the Pages demo.
+
+Optional Python backend SQL tests validate ordering/counts, uniqueness/rollback, injection-as-data and `PRAGMA integrity_check`; they do not turn Studio browser storage into a SQL database. AWS/Appium/DeepEval/Ragas remain unimplemented. No card, paid infrastructure or production-readiness claim is needed to demonstrate this scope honestly.
