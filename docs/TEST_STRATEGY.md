@@ -20,3 +20,5 @@ Current Studio CI includes typecheck/unit/build/auth checks and production-build
 
 ## Saved-data recovery
 Studio checks saved dataset, run-history, claim-review, conversation, timing and AI-review shapes before rendering. Unreadable entries remain stored, affected writes pause, and a visible warning offers a private raw backup and an explicit scoped reset. A mixed run history keeps structurally valid runs. This checks data shape, not provider authenticity or semantic correctness. Browser storage denial and write failure remain visible; in-memory work can be exported but does not survive reload unless saved. The recovery backup preserves raw strings, not a repaired or directly importable dataset. Tests cover cancelled/confirmed reset, preserved valid cases/runs, malformed JSON, feature saves and denied browser storage at phone/desktop sizes.
+
+Recovery regression: an older valid save left by a quota-failed write survives explicit recovery. Non-run malformed blobs remain intact until confirmed reset; download the raw backup first because these blobs are not partly repaired.

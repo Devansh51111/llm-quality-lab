@@ -38,3 +38,9 @@ assert.ok(safe.storageWarnings().includes('ql_claims_v1'));assert.equal(safe.raw
 const realClaim={id:'claim-1',claim:'A claim',evidence:'Some text',verdict:'uncertain',note:'Needs more evidence'};
 assert.equal(safe.safeWrite('ql_claims_v1',[realClaim]),true);assert.deepEqual(safe.safeRead('ql_claims_v1',[]),[realClaim]);
 console.log('PASS corrupt feature saves are quarantined without overwriting raw values; explicit scoped reset and valid claim persistence');
+
+const oldWrite=(globalThis as any).localStorage.setItem;
+(globalThis as any).localStorage.setItem=()=>{throw Error('Controlled quota failure')};
+assert.equal(safe.safeWrite('ql_claims_v1',[]),false);assert.deepEqual(JSON.parse(saves.get('ql_claims_v1')!),[realClaim]);
+(globalThis as any).localStorage.setItem=oldWrite;safe.resetBlockedStorage();assert.deepEqual(JSON.parse(saves.get('ql_claims_v1')!),[realClaim]);
+console.log('PASS recovery from a failed write never deletes an older valid save');

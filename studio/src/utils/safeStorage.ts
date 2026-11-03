@@ -43,7 +43,12 @@ export function safeWrite(key:string,value:unknown):boolean{
 }
 export function clearStorageWarnings(){blocked.clear();notify();}
 export function resetBlockedStorage(){
- for(const key of blocked){if(key==='llm_qualitylab_runs_v1'){const valid=safeRead<any[]>(key,[]);localStorage.setItem(key,JSON.stringify(valid));}else localStorage.removeItem(key);}
+ for(const key of blocked){
+  const raw=localStorage.getItem(key);let current:unknown;try{current=raw===null?undefined:JSON.parse(raw)}catch{current=undefined}
+  // A quota/write failure can leave an older valid save behind. Never delete it.
+  if(raw!==null&&validators[key]?.(current))continue;
+  if(key==='llm_qualitylab_runs_v1'&&raw!==null){const valid=safeRead<any[]>(key,[]);localStorage.setItem(key,JSON.stringify(valid));}else localStorage.removeItem(key);
+ }
  blocked.clear();notify();
 }
 export function rawBlockedStorage(){return Object.fromEntries([...blocked].map(k=>{try{return [k,localStorage.getItem(k)]}catch{return [k,'Browser denied access; original could not be read.']}}));}
