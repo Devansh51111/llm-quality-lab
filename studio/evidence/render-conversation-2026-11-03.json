@@ -1,0 +1,29 @@
+{
+  "reference": "\"Fictional product: OmniFlow. Trial length is 14 days. No credit card is required.\"",
+  "turns": [
+    {
+      "role": "user",
+      "text": "For this fictional test, remember my workspace nickname is Cedar. How long is the trial?",
+      "timestamp": "2026-11-03T15:17:16.808Z"
+    },
+    {
+      "latencyMs": 19486,
+      "origin": "live_gemini_api",
+      "role": "model",
+      "text": "Hello Cedar! The trial length for OmniFlow is 14 days.",
+      "timestamp": "2026-11-03T15:17:36.477Z"
+    },
+    {
+      "role": "user",
+      "text": "What workspace nickname did I tell you in my previous message?",
+      "timestamp": "2026-11-03T15:17:45.556Z"
+    },
+    {
+      "latencyMs": 19562,
+      "origin": "live_gemini_api",
+      "role": "model",
+      "text": "Your workspace nickname is Cedar.",
+      "timestamp": "2026-11-03T15:18:05.323Z"
+    }
+  ]
+}

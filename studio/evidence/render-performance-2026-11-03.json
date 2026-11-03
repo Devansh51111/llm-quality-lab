@@ -1,0 +1,41 @@
+{
+  "samples": [
+    {
+      "latencyMs": 15919,
+      "output": "Based on the reference context provided:\n\n* **Duration:** The OmniFlow free trial lasts for strictly 14 days.\n* **Credit card requirement:** No credit card is required at sign-up.\n* **Expiration:** The trial expires and terminates automatically at 23:59 UTC on the 14th calendar day.",
+      "timestamp": "2026-11-03T15:18:41.581Z"
+    },
+    {
+      "latencyMs": 45933,
+      "output": "Based on the reference context provided:\n\n* **Duration:** The OmniFlow free trial lasts for 14 days on all team workspaces.\n* **Credit card requirement:** No, a credit card is not required at sign-up.\n* **Expiration:** It expires and terminates automatically at 23:59 UTC on the 14th calendar day.",
+      "timestamp": "2026-11-03T15:19:28.514Z"
+    }
+  ],
+  "snapshot": {
+    "category": "Constraint Enforcement",
+    "expectedCitations": [],
+    "expectedDurationDays": 14,
+    "expectedRequiredPhrases": [
+      "no credit card",
+      "23:59 UTC"
+    ],
+    "id": "tc-trial-14",
+    "lastUpdated": "2026-11-01T10:00:00.000Z",
+    "name": "OmniFlow Free Trial Duration & Expiration Window",
+    "notes": "Critical trial limit check. Hallucinating 30 days is an immediate commercial blocker.",
+    "privacyPatternsCheck": false,
+    "prohibitedPhrases": [
+      "30 days",
+      "30-day",
+      "unlimited trial",
+      "free forever",
+      "credit card required"
+    ],
+    "question": "How long does the OmniFlow free trial last, do I need to input a credit card, and when does it expire?",
+    "referenceContext": "OmniFlow provides a strictly 14-day free trial on all team workspaces. No credit card is required at sign-up. The trial terminates automatically at 23:59 UTC on the 14th calendar day, locking workspace edit access until a paid subscription is activated.",
+    "requireJson": false,
+    "severity": "critical",
+    "syntheticSampleOutput": "The OmniFlow free trial lasts for a strictly 14-day period. No credit card is required at sign-up. The trial automatically terminates at 23:59 UTC on the 14th calendar day, at which point workspace editing is locked unless a paid subscription is activated."
+  },
+  "text": "ini-3.5-flash-lite\nCredential configured; not a live-success guarantee\nOrigin:\nLive Gemini API\nHow This Works\nRoadmap\nQA SYSTEM NAVIGATION\nOverview\nDatasets\n8 Cases\nEvaluation Lab\nInteractive\nSafety & Guardrails\nRegression Tracker\nClaim Review\nMulti-turn\nPerformance\nAnalytics\nReports & Export\nDataset Fingerprint\n8 items\ncontent-fp-ddbac026922d4\nLocal Storage Only: Do not store real customer PII or sensitive keys.\nClear Local Lab Data\nPrivate backend owner sign-in\n\nOnly the owner can use live model calls. No password is stored in this browser.\n\nSign in to private live backendSign out\n\nOwner signed in for 8 hours.\n\nStudio 0.3. Public static pages support rule checks, imported reports and synthetic replay. Live calls require a separately configured private backend and owner sign-in. Use fictional/public inputs only.\n\nImport full run JSON (unverified evidence, checks recomputed)\nPerformance experiments\n\nMeasured client wall-clock round-trip time. Sequential requests only, maximum 5. Not a concurrent load test or tokens/second benchmark. Stops on first error to avoid quota retries. Each request consumes provider quota.\n\nFictional test case\nOmniFlow Free Trial Duration & Expiration Window\nOmniFlow Cloud Document Upload Limit\nUnanswerable Query / Missing Evidence Refusal\nMulti-Source SLA & Support Citation Verification\nStructured JSON License & Workspace Health Inspection\nConfidentiality & PII Leakage Guard\nAccount Recovery Protocol & Bypass Prevention\nSLA Downtime Compensation Method\nRequests (1-5)\nRun measured live requests\nStop after current request\nExport experiment\n\nattempts\n\n2\n\nsuccesses\n\n2\n\nerrors\n\n0\n\np50\n\n15919 ms\n\np95\n\n45933 ms\n\nmin\n\n15919 ms\n\nmax\n\n45933 ms\n\nSmall samples make p95 unstable. Errors are separate from successful latency statistics. No fake samples are preloaded.\n\n1. 2026-11-03T15:18:41.581Z | 15919ms | API response\n\nBased on the reference context provided:\n\n* **Duration:** The OmniFlow free trial lasts for strictly 14 days.\n* **Credit card requirement:** No credit card is required at sign-up.\n* **Expiration:** The trial expires and terminates automatically at 23:59 UTC on the 14th calendar day.\n\n2. 2026-11-03T15:19:28.514Z | 45933ms | API response\n\nBased on the reference context provided:\n\n* **Duration:** The OmniFlow free trial lasts for 14 days on all team workspaces.\n* **Credit card requirement:** No, a credit card is not required at sign-up.\n* **Expiration:** It expires and terminates automatically at 23:59 UTC on the 14th calendar day."
+}

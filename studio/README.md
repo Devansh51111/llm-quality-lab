@@ -75,3 +75,24 @@ Static Studio supports full-report import. Imported origin/model/timing are unve
 Production fails closed: set OWNER_PASSWORD (at least16characters, use a generated secret) and a server-only GEMINI_API_KEY. Never put either in a VITE_ variable or commit. Owner sessions use signed HttpOnly Secure SameSite=Strict cookies (8hours); cross-origin POST is denied; login capped5attempts/15min/IP and owner model requests30/hour (in-memory, resets on restart). This is a single-owner portfolio prototype, not enterprise identity management or durable abuse accounting. Do not share the owner password.
 Render free configuration: Node, root studio, build `npm ci --include=dev && npm run build`, start `HOST=0.0.0.0 npm start`, Free$0compute, no payment method. Idle sleep/cold start applies.
 Integration proof: `python tests/owner-auth-integration.py`. No real key is required; the test checks anonymous denial, owner cookie, cross-origin denial, invalid input, no-key error and logout.
+
+## Standalone deployment validation (2026-11-03)
+
+The standalone site is https://llm-quality-lab.onrender.com/ . Its UI is public; production model calls require the owner's separate app password. The password is never part of this repository. Free Render can sleep after inactivity and a cold start can take50seconds or more. The Gemini account dashboard showed Free tier, no prepay setup; this app cannot independently certify provider billing forever. Do not activate billing to make tests pass.
+
+Verified on the deployed source c9b8d16:
+- An anonymous generation attempt was denied with owner-sign-in-required; no provider output was fabricated.
+- Owner login succeeded. A genuine fictional trial question returned in16,177ms;8/8 declared contract rules passed. Exact saved case snapshot/output is in `evidence/render-live-2026-11-03.json`.
+- Native multi-turn: first user turn introduced fictional nickname Cedar. Follow-up omitted it, and the second real response returned Cedar. Four-message transcript saved in `evidence/render-conversation-2026-11-03.json`. Model-request durations19,486/19,562ms. This one example is not a memory-accuracy benchmark.
+- Sequential performance:2real calls returned15,919ms and45,933ms with zero errors. Nearest-rank p50=15,919ms, p95=45,933ms. Two samples do not establish reliable tail latency, concurrency, throughput or availability. Raw samples and exact case snapshot in `evidence/render-performance-2026-11-03.json`.
+- Sign out worked. A subsequent real UI conversation request was denied with owner-sign-in-required and left the four-message transcript unchanged.
+
+The module coverage is a working single-owner portfolio prototype: rule-based response checks, editable dataset contracts, human evidence review, heuristic safety scans, native multi-turn requests, small sequential timing experiments, same-snapshot regression and saved-run analytics/export. It is not calibrated hallucination detection, a safety guarantee, an enterprise release service, a concurrent load tester or an independently audited benchmark. The optional model judge is uncalibrated and not certified by these tests. Browser data is device-local and can be cleared; export reports to retain them. Public JSON evidence can be edited by readers and is not cryptographic provider attestation.
+
+### Five-minute demo
+1. Open site and expand Private backend owner sign-in. Use the separately supplied app password, not Google/GitHub credentials.
+2. Evaluation Lab: inspect the fictional reference and duration/phrase contract. Generate one answer and inspect every rule reason. A rule failure is evidence to investigate, not proof the model is wrong.
+3. Claim Review: load the answer, split claims, select actual reference text and record human supported/unsupported/uncertain verdicts. Lexical suggestions are not entailment judgments.
+4. Multi-turn: introduce a fictional nickname and ask it again without restating it. Inspect/export the actual transcript.
+5. Performance: choose1or2requests only. Read errors separately from latency. Do not describe this as load testing.
+6. Analytics/Reports: inspect exact run IDs and snapshots; export. Regression allows only comparable distinct snapshots. Sign out after the demo.

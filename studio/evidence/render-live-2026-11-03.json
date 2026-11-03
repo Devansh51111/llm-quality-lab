@@ -1,0 +1,142 @@
+{
+  "actualModelVersion": "gemini-3.5-flash-lite",
+  "averageLatencyMs": 16177,
+  "criticalFailures": 0,
+  "datasetFingerprint": "content-fp-601ac5a19a5d8",
+  "datasetSnapshot": [
+    {
+      "category": "Constraint Enforcement",
+      "expectedCitations": [],
+      "expectedDurationDays": 14,
+      "expectedRequiredPhrases": [
+        "no credit card",
+        "23:59 UTC"
+      ],
+      "id": "tc-trial-14",
+      "lastUpdated": "2026-11-01T10:00:00.000Z",
+      "name": "OmniFlow Free Trial Duration & Expiration Window",
+      "notes": "Critical trial limit check. Hallucinating 30 days is an immediate commercial blocker.",
+      "privacyPatternsCheck": false,
+      "prohibitedPhrases": [
+        "30 days",
+        "30-day",
+        "unlimited trial",
+        "free forever",
+        "credit card required"
+      ],
+      "question": "How long does the OmniFlow free trial last, do I need to input a credit card, and when does it expire?",
+      "referenceContext": "OmniFlow provides a strictly 14-day free trial on all team workspaces. No credit card is required at sign-up. The trial terminates automatically at 23:59 UTC on the 14th calendar day, locking workspace edit access until a paid subscription is activated.",
+      "requireJson": false,
+      "severity": "critical",
+      "syntheticSampleOutput": "The OmniFlow free trial lasts for a strictly 14-day period. No credit card is required at sign-up. The trial automatically terminates at 23:59 UTC on the 14th calendar day, at which point workspace editing is locked unless a paid subscription is activated."
+    }
+  ],
+  "deterministicPassRate": 100,
+  "executionErrorsCount": 0,
+  "failedCases": 0,
+  "maxLatencyMs": 16177,
+  "minLatencyMs": 16177,
+  "passedCases": 1,
+  "releaseGateReason": "PASSED: Pass rate 100% >= 90.0%, 0 critical failures, and 0 execution errors across 1 assessed cases.",
+  "releaseGateStatus": "PASSED",
+  "requestedModel": "gemini-3.5-flash-lite",
+  "results": [
+    {
+      "actualModelVersion": "gemini-3.5-flash-lite",
+      "actualOutput": "Based on the reference context provided:\n\n* **Duration:** The OmniFlow free trial lasts for strictly 14 days on all team workspaces.\n* **Credit card requirement:** No credit card is required at sign-up.\n* **Expiration:** The trial terminates automatically at 23:59 UTC on the 14th calendar day.",
+      "category": "Constraint Enforcement",
+      "checks": [
+        {
+          "actual": "Allowed day-duration form",
+          "category": "required_phrase",
+          "details": "Bounded digit/day-form contract. Accepts 14 days or 14-day, rejects conflicting units/durations and explicit negation. It does not prove semantic correctness.",
+          "expected": "Only 14-day duration forms",
+          "passed": true,
+          "ruleId": "duration-days",
+          "ruleName": "Declared day-duration contract"
+        },
+        {
+          "actual": "Found",
+          "category": "required_phrase",
+          "details": "Matched required phrase \"no credit card\" in output.",
+          "expected": "Must contain \"no credit card\"",
+          "passed": true,
+          "ruleId": "req-no credit card",
+          "ruleName": "Required Phrase: \"no credit card\""
+        },
+        {
+          "actual": "Found",
+          "category": "required_phrase",
+          "details": "Matched required phrase \"23:59 UTC\" in output.",
+          "expected": "Must contain \"23:59 UTC\"",
+          "passed": true,
+          "ruleId": "req-23:59 UTC",
+          "ruleName": "Required Phrase: \"23:59 UTC\""
+        },
+        {
+          "actual": "Clean (Not present)",
+          "category": "prohibited_phrase",
+          "details": "Clean: Prohibited term \"30 days\" was not found.",
+          "expected": "Must NOT contain \"30 days\"",
+          "passed": true,
+          "ruleId": "pro-30 days",
+          "ruleName": "Prohibited Term: \"30 days\""
+        },
+        {
+          "actual": "Clean (Not present)",
+          "category": "prohibited_phrase",
+          "details": "Clean: Prohibited term \"30-day\" was not found.",
+          "expected": "Must NOT contain \"30-day\"",
+          "passed": true,
+          "ruleId": "pro-30-day",
+          "ruleName": "Prohibited Term: \"30-day\""
+        },
+        {
+          "actual": "Clean (Not present)",
+          "category": "prohibited_phrase",
+          "details": "Clean: Prohibited term \"unlimited trial\" was not found.",
+          "expected": "Must NOT contain \"unlimited trial\"",
+          "passed": true,
+          "ruleId": "pro-unlimited trial",
+          "ruleName": "Prohibited Term: \"unlimited trial\""
+        },
+        {
+          "actual": "Clean (Not present)",
+          "category": "prohibited_phrase",
+          "details": "Clean: Prohibited term \"free forever\" was not found.",
+          "expected": "Must NOT contain \"free forever\"",
+          "passed": true,
+          "ruleId": "pro-free forever",
+          "ruleName": "Prohibited Term: \"free forever\""
+        },
+        {
+          "actual": "Clean (Not present)",
+          "category": "prohibited_phrase",
+          "details": "Clean: Prohibited term \"credit card required\" was not found.",
+          "expected": "Must NOT contain \"credit card required\"",
+          "passed": true,
+          "ruleId": "pro-credit card required",
+          "ruleName": "Prohibited Term: \"credit card required\""
+        }
+      ],
+      "failureReasons": [],
+      "isCriticalFailure": false,
+      "isExecutionError": false,
+      "latencyMs": 16177,
+      "passed": true,
+      "question": "How long does the OmniFlow free trial last, do I need to input a credit card, and when does it expire?",
+      "referenceContext": "OmniFlow provides a strictly 14-day free trial on all team workspaces. No credit card is required at sign-up. The trial terminates automatically at 23:59 UTC on the 14th calendar day, locking workspace edit access until a paid subscription is activated.",
+      "requestedModel": "gemini-3.5-flash-lite",
+      "runOrigin": "live_gemini_api",
+      "severity": "critical",
+      "testCaseId": "tc-trial-14",
+      "testCaseName": "OmniFlow Free Trial Duration & Expiration Window",
+      "timestamp": "2026-11-03T15:16:35.570Z"
+    }
+  ],
+  "runId": "run-1793718995571-jgjiv",
+  "runName": "Lab Single: OmniFlow Free Trial Duration & Expiration Window",
+  "runOrigin": "live_gemini_api",
+  "timestamp": "2026-11-03T15:16:35.571Z",
+  "totalCases": 1
+}
