@@ -90,7 +90,7 @@ export function OverviewView({
         </div>
         <div className="ql-card lg:col-span-3">
           <p className="ql-label">Top failing outputs</p>
-          {!activeRun?<p className="ql-sub mt-4">Nothing to show yet.</p>:activeRun.results.filter(r=>!r.passed).length===0?<p className="ql-sub mt-4">No failing tests in this run.</p>:<div className="mt-3 divide-y divide-zinc-800">{activeRun.results.filter(r=>!r.passed).sort((x,y)=>Number(y.isCriticalFailure)-Number(x.isCriticalFailure)).slice(0,4).map(r=><button key={r.testCaseId} className="w-full text-left py-3 flex flex-col gap-1 hover:bg-zinc-800/30 rounded" onClick={()=>onNavigateToCaseInLab(r.testCaseId)}><span className="flex flex-wrap items-center gap-2"><span className={`ql-pill ${r.isCriticalFailure?'text-red-300':'text-amber-300'}`}>{r.isCriticalFailure?'critical':r.severity}</span><span className="text-sm text-zinc-100">{r.testCaseName}</span></span><span className="text-xs text-zinc-400">{r.failureReasons[0]||r.executionErrorMessage||'A rule did not match.'}</span><span className="text-xs text-zinc-500 line-clamp-2">{r.actualOutput||'No output recorded.'}</span></button>)}</div>}
+          {!activeRun?<p className="ql-sub mt-4">Nothing to show yet.</p>:activeRun.results.filter(r=>!r.passed).length===0?<p className="ql-sub mt-4">No failing tests in this run.</p>:<div className="mt-3 divide-y divide-zinc-800">{activeRun.results.filter(r=>!r.passed).sort((x,y)=>Number(y.isCriticalFailure)-Number(x.isCriticalFailure)).slice(0,4).map(r=><button key={r.testCaseId} className="w-full text-left py-3 flex flex-col gap-1 hover:bg-zinc-800/30 rounded" onClick={()=>onNavigateToCaseInLab(r.testCaseId)}><span className="flex flex-wrap items-center gap-2"><span className={`ql-pill ${r.isCriticalFailure?'text-red-300':'text-amber-300'}`}>{r.isCriticalFailure?'critical':r.severity}</span><span className="text-sm text-zinc-100">{r.testCaseName}</span></span><span className="text-xs text-zinc-400">{r.failureReasons[0]||r.executionErrorMessage||'A rule did not match.'}</span>{r.checks.some(c=>!c.passed&&c.category==='prohibited_phrase')&&<span className="text-xs text-amber-300/90">Keyword match only: the phrase is in the answer, but its meaning (for example a refusal) is not checked. Open the test and read the answer.</span>}<span className="text-xs text-zinc-500 line-clamp-2">{r.actualOutput||'No output recorded.'}</span></button>)}</div>}
         </div>
       </div>
 
@@ -186,9 +186,9 @@ export function OverviewView({
                   {/* Case summary row */}
                   <div
                     onClick={() => toggleExpand(result.testCaseId)}
-                    className="p-4 sm:px-5 flex items-start sm:items-center justify-between gap-4 cursor-pointer select-none"
+                    className="ql-case-row p-4 sm:px-5 flex items-start sm:items-center justify-between gap-4 cursor-pointer select-none"
                   >
-                    <div className="flex items-start sm:items-center gap-3 min-w-0">
+                    <div className="ql-case-left flex items-start sm:items-center gap-3 min-w-0">
                       <button className="text-zinc-500 hover:text-zinc-300 mt-0.5 sm:mt-0">
                         {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                       </button>
@@ -226,6 +226,7 @@ export function OverviewView({
                         <p className="text-xs text-zinc-400 truncate max-w-xl mt-0.5 font-sans">
                           {result.question}
                         </p>
+                        {!result.passed&&result.checks.some(c=>!c.passed&&c.category==='prohibited_phrase')&&<p className="text-xs text-amber-300/90 mt-1">Keyword rule: a forbidden phrase appears in the answer. The rule does not check meaning, so a refusal that repeats the phrase also fails. Read the answer to decide.</p>}
                       </div>
                     </div>
 

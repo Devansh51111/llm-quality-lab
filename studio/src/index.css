@@ -79,3 +79,4 @@ main label {line-height:1.5;}
 .ql-big{font-size:28px;font-weight:600;margin-top:6px;text-transform:capitalize;}
 .ql-sub{font-size:12px;color:#8b8b95;margin-top:6px;line-height:1.5;}
 .ql-pill{font-size:11px;padding:2px 8px;border-radius:20px;background:#1e2026;border:1px solid #2d3038;}
+@media(max-width:639px){main .ql-case-row{padding:14px;gap:10px;}main .ql-case-left{flex-wrap:nowrap;gap:8px;}main .ql-case-left .truncate{white-space:normal;overflow:visible;}main .ql-case-left p.truncate{white-space:normal;overflow:visible;text-overflow:clip;}main .ql-case-row button{min-width:44px;}main .ql-case-row .flex.items-center.gap-2{flex-wrap:wrap;}}
