@@ -1,0 +1,6 @@
+{
+  "name": "LLM QualityLab",
+  "description": "Professional AI response QA, deterministic validation, regression tracking, and evaluation lab for developer owners.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

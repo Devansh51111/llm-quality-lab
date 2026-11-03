@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #09090b;
+    color: #f4f4f5;
+  }
+
+  code, pre, kbd, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Custom crisp dark scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+html, body, #root { min-width: 0; margin:0; }
+header { flex-wrap:wrap; gap:8px; padding-top:8px; padding-bottom:8px; }
+header button { min-height:44px; min-width:44px; }
+input, textarea, select { max-width:100%; }
+main { overflow-wrap:anywhere; }
+@media(max-width:639px) { main button { min-height:44px; } main .flex { flex-wrap:wrap; } main pre { white-space:pre-wrap; overflow-wrap:anywhere; } }
+@media(max-width:1023px) {
+ aside.-translate-x-full { transform:translateX(-100%) !important; translate:none !important; visibility:hidden; }
+ aside.translate-x-0 { transform:translateX(0) !important; translate:none !important; visibility:visible; }
+}
+main .grid > *, main .flex > * { min-width:0; }
+main select { width:100%; }
+@media(max-width:639px) {
+ main button { white-space:normal; overflow-wrap:normal; }
+ main .pt-2.flex { flex-direction:column; align-items:stretch; }
+}
+
+@media(max-width:767px) {
+ .dataset-table, .dataset-table tbody, .dataset-table tr, .dataset-table td { display:block; width:100%; max-width:100%; }
+ .dataset-table thead { display:none; }
+ .dataset-table tr { padding:12px 0; border-bottom:1px solid #303036; }
+ .dataset-table td { padding:8px 16px; text-align:left; }
+ .dataset-table td::before { content:attr(data-label); display:block; color:#a1a1aa; font-size:11px; margin-bottom:6px; }
+ .dataset-table .truncate { white-space:normal; overflow:visible; text-overflow:clip; }
+ .dataset-table td:last-child > div { justify-content:flex-start; }
+}
