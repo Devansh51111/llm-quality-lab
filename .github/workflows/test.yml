@@ -1,0 +1,39 @@
+name: QA tests
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+      - name: Check release gate semantics
+        shell: bash
+        run: |
+          set +e
+          python -m evalforge run --responses data/baseline.json --label 'Synthetic baseline' --out runs/baseline.json
+          code=$?
+          set -e
+          test "$code" -eq 1
+          python -m evalforge run --responses data/candidate.json --label 'Synthetic candidate' --out runs/candidate.json
+          python -m evalforge compare runs/baseline.json runs/candidate.json
+  promptfoo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m evalforge export-promptfoo
+      - name: Execute fixture bridge (not a model benchmark)
+        env:
+          PROMPTFOO_DISABLE_TELEMETRY: '1'
+        run: npx --yes promptfoo@0.125.1 eval -c promptfooconfig.json --no-cache --no-progress-bar
