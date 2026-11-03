@@ -47,23 +47,12 @@ export default function App() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [labSelectedCaseId, setLabSelectedCaseId] = useState<string | null>(null);
 
-  // Fetch server status on mount
-  useEffect(() => {
-    fetch('api/status')
-      .then((res) => res.json())
-      .then((data) => {
-        setServerStatus({
-          hasApiKey: data.hasApiKey,
-          tier: data.tier,
-        });
-      })
-      .catch((err) => {
-        console.warn('[Server Status Check Failed]', err);
-        setServerStatus({ hasApiKey: false, tier: 'Disconnected' });
-      });
-  }, []);
+  async function refreshServerStatus(){
+    try{const r=await fetch('api/status');if(!r.ok)throw Error('No backend');const data=await r.json();setServerStatus({hasApiKey:Boolean(data.hasApiKey),tier:data.tier});}
+    catch{setServerStatus({hasApiKey:false,tier:'Disconnected'});}
+  }
+  useEffect(()=>{void refreshServerStatus();},[]);
 
-  // Compute dataset fingerprint dynamically
   const datasetFingerprint = useMemo(() => {
     return computeDatasetFingerprint(cases);
   }, [cases]);
@@ -259,7 +248,7 @@ export default function App() {
         {/* Content Area */}
         <main className="flex-1 min-w-0 lg:pl-64 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
           <div className="mb-5 p-4 bg-zinc-900 border border-zinc-700 rounded-xl text-sm space-y-2">
-            <details><summary className="cursor-pointer text-cyan-300">Private backend owner sign-in</summary><p className="text-xs text-zinc-400 mt-2">Only the owner can use live model calls. No password is stored in this browser.</p><input aria-label="Owner access password" type="password" autoComplete="current-password" className="ql-input" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)}/><button className="ql-button mt-2" onClick={async()=>{try{const r=await fetch('api/owner/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:ownerPassword})});const d=await r.json();setOwnerStatus(r.ok?'Owner signed in for 8 hours.':d.error);setOwnerPassword('');}catch{setOwnerStatus('No private backend is connected at this URL.');}}}>Sign in to private live backend</button><p role="status">{ownerStatus}</p></details>
+            <details><summary className="cursor-pointer text-cyan-300">Private backend owner sign-in</summary><p className="text-xs text-zinc-400 mt-2">Only the owner can use live model calls. No password is stored in this browser.</p><input aria-label="Owner access password" type="password" autoComplete="current-password" className="ql-input" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)}/><button className="ql-button mt-2" onClick={async()=>{try{const r=await fetch('api/owner/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:ownerPassword})});const d=await r.json();setOwnerStatus(r.ok?'Owner signed in for 8 hours.':d.error);setOwnerPassword('');await refreshServerStatus();}catch{setOwnerStatus('No private backend is connected at this URL.');}}}>Sign in to private live backend</button><button className="ql-button mt-2 ml-2" onClick={async()=>{try{await fetch('api/owner/logout',{method:'POST'});setOwnerStatus('Signed out. Live calls are locked.');await refreshServerStatus();}catch{setOwnerStatus('Could not reach private backend.');}}}>Sign out</button><p role="status">{ownerStatus}</p></details>
             <p>Studio 0.3. Public static pages support rule checks, imported reports and synthetic replay. Live calls require a separately configured private backend and owner sign-in. Use fictional/public inputs only.</p>
             <label className="block text-cyan-300">Import full run JSON (unverified evidence, checks recomputed)<input aria-label="Import full run JSON" type="file" accept="application/json,.json" className="block mt-2 max-w-full text-xs" onChange={async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>5000000)throw Error('Maximum file size5MB.');const run=importRun(JSON.parse(await f.text()));saveStoredRun(run);setAllRuns(getStoredRuns());setActiveRunIdState(run.runId);}catch(err){alert(String(err));}e.target.value='';}}/></label>
             {activeRun?.notes?.includes('IMPORTED_UNVERIFIED')&&<p className="text-amber-300">{activeRun.notes}</p>}

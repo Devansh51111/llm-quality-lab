@@ -56,13 +56,13 @@ app.use('/api',(req,res,next)=>{
 function getGenAIClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY is not configured in environment. In AI Studio, ensure runtime API key is present.');
+    throw new Error('GEMINI_API_KEY is not configured in environment. The owner must configure a free-tier server credential.');
   }
   return new GoogleGenAI({
     apiKey,
     httpOptions: {
       headers: {
-        'User-Agent': 'aistudio-build',
+        'User-Agent': 'qualitylab-owner-prototype',
       },
     },
   });
@@ -93,7 +93,7 @@ app.post('/api/generate', async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
     return res.status(503).json({
-      error: 'GEMINI_API_KEY is not set or invalid in AI Studio runtime environment.',
+      error: 'Server model credential is not configured. Owner setup is required.',
       code: 'API_KEY_UNAVAILABLE',
     });
   }
@@ -206,7 +206,7 @@ app.post('/api/judge', async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
     return res.status(503).json({
-      error: 'GEMINI_API_KEY is not set or invalid in AI Studio runtime environment.',
+      error: 'Server model credential is not configured. Owner setup is required.',
       code: 'API_KEY_UNAVAILABLE',
     });
   }
