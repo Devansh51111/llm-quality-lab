@@ -103,4 +103,8 @@ The **Reviewer checks** page provides 24 AI-authored fictional cases with four e
 
 Run `npm run test:e2e` after `npx playwright install chromium`. CI installs Chromium and runs the current Studio at 320/390/1280 against a keyless authenticated local server. It checks synthetic replay, persisted state, navigation, model access denial, reviewer error/coverage feedback and horizontal overflow. These tests do not establish live model correctness. The separate older `tests/browser_smoke.py` covers the Pages demo.
 
-Optional Python backend SQL tests validate ordering/counts, uniqueness/rollback, injection-as-data and `PRAGMA integrity_check`; they do not turn Studio browser storage into a SQL database. AWS/Appium/DeepEval/Ragas remain unimplemented. No card, paid infrastructure or production-readiness claim is needed to demonstrate this scope honestly.
+Optional Python backend SQL tests validate ordering/counts, uniqueness/rollback, injection-as-data and `PRAGMA integrity_check`; they do not turn Studio browser storage into a SQL database. AWS/Appium/DeepEval and model-based Ragas faithfulness remain unimplemented. Offline Ragas text-overlap diagnostics are implemented separately; they do not prove semantic support. No card, paid infrastructure or production-readiness claim is needed to demonstrate this scope honestly.
+
+## Offline Ragas integration
+
+[Optional isolated Ragas adapter](../integrations/ragas/README.md) runs actual ExactMatch, Levenshtein and ROUGE-L metrics with zero model calls. Results are visible/exportable in Reviewer checks and reproducible in CI. These are overlap diagnostics, not calibrated semantic evaluation. The wrong-number counterexample is tested explicitly.

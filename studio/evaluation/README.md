@@ -34,7 +34,7 @@ Imported model/provenance fields are unverified. The exact dataset/version is re
 
 ## Tool-name gaps
 
-DeepEval/Ragas are not integrated, Appium/native mobile testing is not implemented, and AWS deployment is not implemented. The project instead has a dependency-light metric harness, current-app Chromium Playwright automation, SQLite query assertions for the optional Python service, and a working free Render deployment. These are explicit scope choices, not claims that the omitted skills are irrelevant to an employer.
+Model-based Ragas Faithfulness and DeepEval are not integrated (offline Ragas text-overlap diagnostics are now separate), Appium/native mobile testing is not implemented, and AWS deployment is not implemented. The project instead has a dependency-light metric harness, current-app Chromium Playwright automation, SQLite query assertions for the optional Python service, and a working free Render deployment. These are explicit scope choices, not claims that the omitted skills are irrelevant to an employer.
 
 ## Recorded development run, 2026-11-03
 

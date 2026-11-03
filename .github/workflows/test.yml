@@ -63,3 +63,23 @@ jobs:
           name: studio-browser-evidence
           path: studio/test-results/
           retention-days: 7
+
+  ragas-offline:
+    runs-on: ubuntu-24.04
+    env:
+      RAGAS_DO_NOT_TRACK: 'true'
+      HF_HUB_OFFLINE: '1'
+      HF_DATASETS_OFFLINE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r integrations/ragas/requirements.txt
+      - run: python integrations/ragas/run_offline.py --out /tmp/ragas-offline.json
+      - run: python -m pytest integrations/ragas/test_offline.py -q
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ragas-offline-diagnostics
+          path: /tmp/ragas-offline.json
+          retention-days: 7

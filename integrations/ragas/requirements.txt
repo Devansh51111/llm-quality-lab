@@ -1,0 +1,7 @@
+# Isolated optional integration. No model, account, key or API call.
+ragas==0.4.1
+# Ragas 0.4.1 imports this legacy module; newer 0.4.x removes it.
+langchain-community==0.3.31
+rapidfuzz==3.14.3
+rouge-score==0.1.2
+pytest==9.2.0

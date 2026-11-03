@@ -43,15 +43,15 @@ export function HowThisWorksModal({ isOpen, onClose }: HowThisWorksModalProps) {
           <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-lg p-4">
             <h3 className="text-white font-semibold flex items-center gap-2 mb-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              1. Deterministic Rule Verification (Zero-Hallucination Testing)
+              1. Deterministic Rule Verification (Narrow Contract Checks)
             </h3>
             <p className="text-xs text-zinc-400 leading-relaxed">
               Real QA in production starts with deterministic constraints that can be objectively proven without reliance on another fallible model:
             </p>
             <ul className="list-disc pl-5 mt-2 space-y-1 text-xs text-zinc-400">
               <li><strong className="text-zinc-200">Required Phrases:</strong> Verifies that essential policy boundaries, durations (e.g. &quot;14-day&quot;), or error codes are present.</li>
-              <li><strong className="text-zinc-200">Prohibited Phrases:</strong> Prevents unauthorized commitments (e.g. &quot;unlimited trial&quot;), competitor mentions, or hallucinations.</li>
-              <li><strong className="text-zinc-200">Citation Integrity:</strong> Checks whether document tags like <code className="text-cyan-300 font-mono">[DOC-14]</code> are retained.</li>
+              <li><strong className="text-zinc-200">Prohibited Phrases:</strong> Flags configured phrases for review; does not prevent unauthorized commitments (e.g. &quot;unlimited trial&quot;), competitor mentions, or hallucinations.</li>
+              <li><strong className="text-zinc-200">Citation Marker Presence:</strong> Checks whether document tags like <code className="text-cyan-300 font-mono">[DOC-14]</code> are retained.</li>
               <li><strong className="text-zinc-200">Structured JSON Syntax:</strong> Ensures responses parse into clean JSON objects without truncation or corruption.</li>
               <li><strong className="text-zinc-200">PII &amp; Secret Guards:</strong> Scans outputs with regex for Social Security Numbers, 16-digit credit cards, and internal employee emails.</li>
             </ul>

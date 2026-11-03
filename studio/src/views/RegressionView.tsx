@@ -103,6 +103,7 @@ export function RegressionView({ allRuns, activeRun }: RegressionViewProps) {
                 Baseline Run (Reference)
               </label>
               <select
+                aria-label="Baseline Run"
                 value={baselineRunId}
                 onChange={(e) => setBaselineRunId(e.target.value)}
                 className="w-full bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-200 px-3 py-2 rounded-lg focus:outline-hidden focus:border-cyan-500"
@@ -121,6 +122,7 @@ export function RegressionView({ allRuns, activeRun }: RegressionViewProps) {
                 Target Run (Comparison)
               </label>
               <select
+                aria-label="Target Run"
                 value={targetRunId}
                 onChange={(e) => setTargetRunId(e.target.value)}
                 className="w-full bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-200 px-3 py-2 rounded-lg focus:outline-hidden focus:border-cyan-500"

@@ -12,4 +12,4 @@ Next, in priority order:
 5. Appium companion tests need a real target app and a device/emulator. Browser viewport checks are not native-mobile tests. AWS/Device Farm and paid providers are not enabled.
 6. Consider database-backed multi-user storage, durable auth/rate limits, deployment approval/rollback and independent security review only when requirements justify them. Render Free plus unit/E2E CI is not production-grade certification.
 
-DeepEval/Ragas are not integrated. The dependency-light metric harness is explicit about that; adding a library does not replace independent validation.
+Offline Ragas text-overlap metrics are integrated in an isolated reproducible adapter; model-based Ragas Faithfulness and DeepEval are not integrated. The dependency-light metric harness is explicit about that; adding a library does not replace independent validation.

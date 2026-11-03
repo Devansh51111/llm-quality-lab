@@ -8,3 +8,5 @@ node_modules/
 
 studio/test-results/
 studio/playwright-report/
+
+.venv-ragas/

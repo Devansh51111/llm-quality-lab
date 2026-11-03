@@ -14,3 +14,6 @@ include = ["evalforge*"]
 
 [tool.setuptools.package-data]
 evalforge = ["*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -12,6 +12,8 @@ Implemented prototype modules: deterministic response contracts, editable datase
 
 **Reviewer checks** adds 24 AI-authored fictional development cases, a narrow exact-text baseline, confusion matrix, per-class precision/recall/F1, error/coverage counts and results export. These expected labels are not independent human ground truth or a held-out test set. Initial model agreement is unmeasured until an actual run. See [`studio/evaluation/README.md`](studio/evaluation/README.md) for provenance and independent-validation steps.
 
+An [offline Ragas integration](integrations/ragas/README.md) adds reproducible exact-match/string-similarity/ROUGE-L diagnostics with no model call. High overlap can hide a factual contradiction; these are not faithfulness metrics.
+
 CI runs Python unit/SQL/API tests, the Promptfoo synthetic bridge, Studio unit/typecheck/build checks, owner-auth integration and current-Studio Playwright Chromium E2E at 320/390/1280. Browser tests use a local keyless server, not live model assertions. This is portfolio QA evidence, not production-grade certification.
 
 See [Studio setup, honest limits and interview demo](studio/README.md). Never place a key or password in a browser build or commit.

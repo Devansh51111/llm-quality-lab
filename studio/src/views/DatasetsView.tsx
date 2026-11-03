@@ -117,6 +117,8 @@ export function DatasetsView({
       notes: formData.notes || '',
     };
 
+    const checked=validateDataset([updated]);
+    if(!checked.isValid){alert(checked.error);return;}
     onSaveCase(updated);
     cancelEdit();
   };
@@ -420,6 +422,7 @@ export function DatasetsView({
                   <input
                     type="text"
                     required
+                    aria-label="Test Case Name"
                     value={formData.name || ''}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-hidden focus:border-cyan-500 font-sans"
@@ -464,6 +467,7 @@ export function DatasetsView({
                 <textarea
                   required
                   rows={2}
+                  aria-label="Target Question"
                   value={formData.question || ''}
                   onChange={(e) => setFormData({ ...formData, question: e.target.value })}
                   className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-hidden focus:border-cyan-500 font-sans"
@@ -475,6 +479,7 @@ export function DatasetsView({
                 <label className="text-zinc-300 font-semibold">Fictional Reference Grounding Paragraph</label>
                 <textarea
                   rows={3}
+                  aria-label="Reference Grounding"
                   value={formData.referenceContext || ''}
                   onChange={(e) => setFormData({ ...formData, referenceContext: e.target.value })}
                   className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-hidden focus:border-cyan-500 font-sans"
@@ -578,6 +583,7 @@ export function DatasetsView({
                 </div>
                 <textarea
                   rows={2}
+                  aria-label="Synthetic Sample Output"
                   value={formData.syntheticSampleOutput || ''}
                   onChange={(e) => setFormData({ ...formData, syntheticSampleOutput: e.target.value })}
                   className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-hidden focus:border-cyan-500 font-mono text-xs"
