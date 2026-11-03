@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { TestCase, TestCaseResult, JudgeEvaluation, SeverityLevel } from '../types/qa';
 import { evaluateTestCase } from '../utils/evaluator';
+import {refundExample,parseDurationInput} from '../utils/labPresets';
 
 interface EvaluationLabViewProps {
   cases: TestCase[];
@@ -40,6 +41,8 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
   const [privacyCheck, setPrivacyCheck] = useState(Boolean(initialCase?.privacyPatternsCheck));
   const [severity, setSeverity] = useState<SeverityLevel>(initialCase?.severity || 'medium');
 
+  const [durationText,setDurationText]=useState(String(initialCase?.expectedDurationDays??''));
+
   // Execution states
   const [isGenerating, setIsGenerating] = useState(false);
   const [isJudging, setIsJudging] = useState(false);
@@ -49,10 +52,11 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
   const [copied, setCopied] = useState(false);
 
   // Quick switch case
-  const handleSelectCase = (caseId: string) => {
-    const found = cases.find((c) => c.id === caseId);
-    if (!found) return;
+  const loadCase = (found:TestCase) => {
     setActiveCase(found);
+    setDurationText(String(found.expectedDurationDays??''));
+    setLatestResult(null);
+    setEnableJudge(false);
     setQuestion(found.question);
     setReferenceContext(found.referenceContext);
     setRequiredPhrasesText(found.expectedRequiredPhrases.join(', '));
@@ -64,9 +68,12 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
     setRunError(null);
   };
 
+  const handleSelectCase=(caseId:string)=>{const found=cases.find(c=>c.id===caseId);if(found)loadCase(found);};
+
   // 1. Real Generate Answer via Server API (calls gemini-3.5-flash-lite)
   const handleGenerateAnswer = async () => {
     if (isGenerating) return; // Prevent duplicate clicks
+    let duration:number|undefined;try{duration=parseDurationInput(durationText);}catch(e){setRunError(String(e));return;}
     setIsGenerating(true);
     setRunError(null);
 
@@ -91,6 +98,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
 
       const currentCaseConfig: TestCase = {
         ...activeCase,
+        expectedDurationDays:duration,
         question: question.trim(),
         referenceContext: referenceContext.trim(),
         expectedRequiredPhrases: requiredPhrasesText.split(',').map((s) => s.trim()).filter(Boolean),
@@ -156,9 +164,11 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
 
   // 2. Replay Synthetic Sample Fixture (Latency is strictly null/unmeasured)
   const handleReplaySample = () => {
+    let duration:number|undefined;try{duration=parseDurationInput(durationText);}catch(e){setRunError(String(e));return;}
     setRunError(null);
     const currentCaseConfig: TestCase = {
       ...activeCase,
+      expectedDurationDays:duration,
       question: question.trim(),
       referenceContext: referenceContext.trim(),
       expectedRequiredPhrases: requiredPhrasesText.split(',').map((s) => s.trim()).filter(Boolean),
@@ -213,6 +223,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
             onChange={(e) => handleSelectCase(e.target.value)}
             className="bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-200 px-3 py-1.5 rounded-lg focus:outline-hidden focus:border-cyan-500 max-w-[220px] truncate"
           >
+            {!cases.some(c=>c.id===activeCase.id)&&<option value={activeCase.id}>{activeCase.name}</option>}
             {cases.map((c) => (
               <option key={c.id} value={c.id}>
                 [{c.severity.toUpperCase()}] {c.name}
@@ -222,6 +233,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
         </div>
       </div>
 
+<div className="p-4 border border-cyan-900 rounded-xl"><button disabled={isGenerating||isJudging} className="ql-button" onClick={()=>{if(confirm('Replace the current Lab question, reference and all rules with the fictional refund example? Dataset and saved runs are unchanged.'))loadCase(refundExample());}}>Load complete refund example</button><p className="text-xs text-zinc-400 mt-2">Replaces all Lab inputs together, including clearing the trial duration. Does not modify Datasets or historical runs. Read the answer: expected outcome is not eligible because120calls exceeds the usage limit, despite5days being within7days.</p></div>
       {/* Main split workbench: Input Configuration vs Output Inspection */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Case Parameters & Generation Controls */}
@@ -278,7 +290,7 @@ export function EvaluationLabView({ cases, selectedCaseId, onSaveCaseResult }: E
                 Deterministic Constraint Rules
               </div>
 
-              <p className="text-xs text-zinc-400 mb-3">Day-duration contract: {activeCase?.expectedDurationDays ?? 'none'} days. Change in Datasets. Lexical contract, not semantic truth.</p>
+              <label className="block text-xs text-zinc-300 mb-3">Day-duration contract (optional days)<input aria-label="Day-duration contract" type="number" min="1" max="36500" step="1" value={durationText} onChange={e=>setDurationText(e.target.value)} className="ql-input mt-2" placeholder="Empty = no duration rule"/><span className="block mt-1 text-zinc-400">Leave empty when not testing a duration. This narrow day-form rule is not a refund-window or semantic check.</span></label>
               <div className="space-y-1">
                 <label className="text-[11px] text-zinc-400">Required Phrases (comma-separated)</label>
                 <input
