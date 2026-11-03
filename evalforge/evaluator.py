@@ -2,7 +2,6 @@
 import json
 import math
 import re
-from collections import Counter
 
 KINDS = {'contains_all', 'contains_any', 'excludes', 'json_schema', 'citations', 'max_latency', 'no_pii', 'numeric_claims'}
 
@@ -25,6 +24,8 @@ def validate_cases(cases):
         if not isinstance(c.get('checks'), list) or not c['checks']:
             raise ValueError('Each case needs checks')
         for check in c['checks']:
+            if not isinstance(check, dict):
+                raise ValueError('Each check must be an object')
             if check.get('type') not in KINDS:
                 raise ValueError('Unknown check type: ' + str(check.get('type')))
             k = check['type']
@@ -35,8 +36,8 @@ def validate_cases(cases):
                 raise ValueError('max_latency needs a positive finite ms budget')
             if k == 'citations' and (not isinstance(check.get('required'), list) or not check['required']):
                 raise ValueError('citations needs required source ids')
-            if k == 'json_schema' and not isinstance(check.get('required'), dict):
-                raise ValueError('json_schema needs a required field/type map')
+            if k == 'json_schema' and (not isinstance(check.get('required'), dict) or any(v not in {'string','array','number','boolean','object'} for v in check.get('required', {}).values())):
+                raise ValueError('json_schema needs a supported required field/type map')
             if k == 'numeric_claims' and (not isinstance(check.get('allowed'), list) or not check['allowed']):
                 raise ValueError('numeric_claims needs allowed numeric strings')
     return cases
@@ -92,6 +93,8 @@ def evaluate(cases, responses, *, label, mode, provenance):
     validate_cases(cases)
     if mode not in {'fixture', 'imported', 'ollama'}:
         raise ValueError('Unknown run mode')
+    if not isinstance(responses, dict):
+        raise ValueError('Responses must be an object keyed by case id')
     expected_ids = {c['id'] for c in cases}
     extra = set(responses) - expected_ids
     if extra:

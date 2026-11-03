@@ -124,3 +124,12 @@ def test_provider_error_is_failure():
 def test_keyword_negation_limitation_documented():
     # An honest known limitation: matching words does not prove correctness.
     assert grade({'type':'contains_all','values':['14']},'The trial is NOT 14 days.')[0]
+
+
+def test_response_container_rejected():
+    with pytest.raises(ValueError):run([])
+
+
+def test_check_must_be_object():
+    c=copy.deepcopy(CASES);c[0]['checks']=['not an object']
+    with pytest.raises(ValueError):validate_cases(c)

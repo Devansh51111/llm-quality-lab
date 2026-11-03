@@ -6,7 +6,11 @@ A working, local-first QA framework for saved LLM responses. It makes test expec
 
 ## Try without installing anything
 
-The public browser demo is published through this repository's GitHub Pages environment. Open the deployed site from the repository's Deployments/Environments panel.
+**Browser demo:** https://devansh51111.github.io/llm-quality-lab/
+
+**CI:** https://github.com/Devansh51111/llm-quality-lab/actions
+
+The demo is a public static site. No account, install, API key or payment is needed to try its fixture evaluations.
 
 1. Inspect the broken baseline and improved fixture.
 2. Expand **Try a regression yourself**.
