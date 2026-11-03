@@ -10,7 +10,7 @@ The [`studio/`](studio/) folder contains the current React/TypeScript app with a
 
 Implemented prototype modules: deterministic response contracts, editable datasets, experimental AI evidence suggestions plus human review, heuristic safety scans, native multi-turn requests, small sequential timing experiments, same-snapshot regressions and analytics/export. Saved Studio data is browser-local. Earlier live connection/multi-turn/timing evidence in [`studio/evidence/`](studio/evidence/) is smoke evidence, not a quality benchmark.
 
-**Reviewer checks** adds 24 AI-authored fictional development cases, a narrow exact-text baseline, confusion matrix, per-class precision/recall/F1, error/coverage counts and results export. These expected labels are not independent human ground truth or a held-out test set. Initial model agreement is unmeasured until an actual run. See [`studio/evaluation/README.md`](studio/evaluation/README.md) for provenance and independent-validation steps.
+**Reviewer checks** adds 24 AI-authored fictional development cases, a narrow exact-text baseline, confusion matrix, per-class precision/recall/F1, error/coverage counts and results export. These expected labels are not independent human ground truth or a held-out test set. A recorded live development run is available: 19/24 agreement (79.2%) with these authored expectations, macro F1 0.764. This is not factual accuracy or independent human agreement; all five disagreements are retained. New experiments start unmeasured. See [`studio/evaluation/README.md`](studio/evaluation/README.md) for provenance and independent-validation steps.
 
 An [offline Ragas integration](integrations/ragas/README.md) adds reproducible exact-match/string-similarity/ROUGE-L diagnostics with no model call. High overlap can hide a factual contradiction; these are not faithfulness metrics.
 
@@ -117,7 +117,7 @@ A pass means the output satisfied the declared checks for that case. It does not
 - Latency checks require actual measurements. Fixture latency is absent, not fabricated. No cost/token estimate is invented.
 - Sixteen synthetic cases are pipeline proof, not benchmark coverage. An independent human-labelled held-out set is needed for quality estimates.
 
-Do NOT rename contract pass rate as "accuracy", "faithfulness", or "hallucination rate". DeepEval/Ragas semantic evaluators, a calibrated local judge, multi-turn tool calling, load tests, authentication, hosted API inference and Appium/AWS are **not implemented**. See [roadmap](docs/ROADMAP.md).
+Do NOT rename contract pass rate as "accuracy", "faithfulness", or "hallucination rate". Model-based DeepEval/Ragas semantic metrics, independently calibrated judges, multi-turn tool calling, concurrent load tests and Appium/AWS are **not implemented**. Studio owner authentication and hosted Gemini inference ARE implemented; native user/model conversations have small live smoke evidence. Offline Ragas overlap metrics are implemented separately and do not prove support. See [roadmap](docs/ROADMAP.md).
 
 ## Interview walkthrough
 

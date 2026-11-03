@@ -17,7 +17,7 @@ export function Header({
   serverStatus,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 min-h-16 bg-zinc-950/90 border-b border-zinc-800/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
+    <header className="sticky top-0 z-30 min-h-16 flex-wrap gap-y-2 py-2 sm:py-0 bg-zinc-950/90 border-b border-zinc-800/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
       <div className="flex items-center gap-1 sm:gap-3 min-w-0">
         {/* Mobile Hamburger */}
         <button

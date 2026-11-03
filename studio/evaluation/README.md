@@ -4,7 +4,7 @@ Open **Reviewer checks** in the current Studio app. Run 4 cases (one per class) 
 
 ## Provenance and scope
 
-The 24 fictional examples and expected labels were authored with AI assistance. They are development fixtures, publicly visible and **not independent human annotations, not held out and not a real-world accuracy benchmark**. No empirical model result is bundled until a real run is recorded. The source of truth is `src/data/reviewerCases.ts` and version `synthetic-reviewer-checks-v1`.
+The 24 fictional examples and expected labels were authored with AI assistance. They are development fixtures, publicly visible and **not independent human annotations, not held out and not a real-world accuracy benchmark**. The bundled empirical model result comes from the recorded real development run below, not a simulation. The source of truth is `src/data/reviewerCases.ts` and version `synthetic-reviewer-checks-v1`.
 
 The cases test exact support, paraphrase, negation, numeric equivalence/contradiction, wrong-subject quotes, missing facts, ambiguous/conflicting policies and embedded candidate instructions. Embedded instructions are deliberately untrusted test data. The API receives reference + candidate only, never expected labels or rationales. The evaluator prompt is unchanged by this fixture set.
 
