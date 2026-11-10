@@ -10,7 +10,7 @@ test('recorded prompt pair reuses regression without calling AI',async({page})=>
  await expect(page.getByText('Consistently Passing: 3',{exact:true})).toBeVisible();
  await expect(page.getByText('Persistent Failures: 4',{exact:true})).toBeVisible();
  expect(posts).toEqual([]);
- await page.screenshot({path:'/downloads/qualitylab-recorded-comparison.png',fullPage:true});
+ await page.screenshot({path:'test-results/prompt-comparison.png',fullPage:true});
  await page.getByRole('button',{name:'Reports & Export',exact:true}).click();
  await expect(page.getByText('B: Revised prompt | recorded 10 Nov 2026',{exact:false}).first()).toBeVisible();
 });
