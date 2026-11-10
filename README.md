@@ -18,6 +18,12 @@ CI runs Python unit/SQL/API tests, the Promptfoo synthetic bridge, Studio unit/t
 
 See [Studio setup, honest limits and interview demo](studio/README.md). Never place a key or password in a browser build or commit.
 
+## Recorded real prompt comparison (10 November 2026)
+
+The eight fictional Studio cases now have a separate real weak-vs-revised prompt experiment. Same Gemini model and fixed case/rule snapshot: weak 3/8 (37.5%), revised 4/8 (50%), both release-blocked. This is deterministic case-rule compliance on a known development set, not factual accuracy or independent validation. Several failures expose brittle exact-phrase/negation checks. Sixteen successful outputs and one preliminary 503 are retained; no successful outputs were rerun or selected.
+
+In Studio, expand **Real prompt comparison: 8 fictional cases** and load the recorded pair into the existing Regression Tracker without making API calls. A prompt selector also lets the owner run fresh A/B Dashboard suites; existing default behavior and synthetic samples stay unchanged. [Method, limitations and demo steps](studio/PROMPT_COMPARISON.md) and [full recorded evidence](studio/evidence/prompt-comparison-2026-11-10.json).
+
 ## Try without installing anything
 
 **Browser demo:** https://devansh51111.github.io/llm-quality-lab/

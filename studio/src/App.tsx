@@ -1,3 +1,4 @@
+import {COMPARISON_PROMPTS, RECORDED_COMPARISON} from './data/promptComparison';
 import {StorageRecovery} from './components/StorageRecovery';
 import {ReviewerChecksView} from './views/ReviewerChecksView';
 import {SemanticReviewView} from './views/SemanticReviewView';
@@ -31,7 +32,9 @@ import {
 } from './utils/storage';
 import { computeDatasetFingerprint, evaluateTestCase, buildRunResult } from './utils/evaluator';
 
+
 export default function App() {
+  const [suitePrompt,setSuitePrompt]=useState<'default'|'weak'|'revised'>('default');
   const [ownerPassword,setOwnerPassword]=useState('');
   const [ownerStatus,setOwnerStatus]=useState('');
   const [ownerSignedIn,setOwnerSignedIn]=useState(false);
@@ -73,6 +76,8 @@ export default function App() {
     setIsRunningSuite(true);
     setSuiteProgress({ current: 0, total: cases.length, currentCaseName: '' });
 
+    const selectedPrompt=suitePrompt;
+    const systemInstruction=selectedPrompt==='default'?'':COMPARISON_PROMPTS[selectedPrompt];
     const results: TestCaseResult[] = [];
     const requestedModel = 'gemini-3.5-flash-lite';
     let actualModelReported = 'not reported';
@@ -90,6 +95,7 @@ export default function App() {
             question: tc.question,
             referenceContext: tc.referenceContext,
             requireJson: tc.requireJson,
+            systemInstruction,
           }),
         });
 
@@ -136,8 +142,10 @@ export default function App() {
       'live_gemini_api',
       requestedModel,
       datasetFingerprint,
-      actualModelReported
+      actualModelReported,
+      selectedPrompt==='default'?undefined:`${selectedPrompt==='weak'?'A: Weak prompt':'B: Revised prompt'} | live suite`
     );
+    newRun.notes=`System instruction: ${systemInstruction || 'No additional system instruction; server grounding wrapper remains active.'}\nSame model and server wrapper; prompt choice snapshotted before generation. One generation per case, stochastic provider defaults; not an independent benchmark. A provider error stops the suite; the server may retry a transient 503 once. Dataset fingerprint covers cases/rules, not this intentionally varied prompt.`;
     saveStoredRun(newRun);
     setAllRuns(previous=>[newRun,...previous.filter(r=>r.runId!==newRun.runId)].slice(0,20));
     setActiveRunIdState(newRun.runId);
@@ -252,6 +260,20 @@ export default function App() {
 
         {/* Content Area */}
         <main className="flex-1 min-w-0 lg:pl-64 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+          <details className="mb-5 p-4 bg-zinc-900 border border-cyan-900 rounded-xl text-sm space-y-3">
+            <summary className="cursor-pointer text-cyan-300 font-semibold">Real prompt comparison: 8 fictional cases</summary>
+            <p>Recorded 10 November 2026 with one Gemini model: A (weak) passed 3/8 rules (37.5%); B (revised) passed 4/8 (50%). Both release gates blocked. This is known-development-set prompt tuning, not factual accuracy or an independent benchmark.</p>
+            <p className="text-xs text-zinc-400">The revised prompt includes refusal wording checked by these rules. Several failures are rule false alarms: bans also match negated phrases such as "no bypass". Do not treat the score gain as proof of safer answers. One initial provider 503 was retained; only missing requests resumed. Successful outputs were not rerun or selected.</p>
+            <button className="ql-button" disabled={isRunningSuite} onClick={()=>{for(const run of RECORDED_COMPARISON)saveStoredRun(run);setAllRuns(previous=>[...RECORDED_COMPARISON].reverse().concat(previous.filter(r=>!RECORDED_COMPARISON.some(c=>c.runId===r.runId))).slice(0,20));setActiveRunIdState(RECORDED_COMPARISON[1].runId);setCurrentTab('regression');}}>Load recorded A/B into Regression Tracker (no AI calls)</button>
+            <p className="text-xs text-zinc-400">Recorded live SDK outputs, same content wrapper as server.ts; replaying them does not make a fresh model call. Full case snapshots, actual outputs, rules and prompt text are preserved in the source. Records are not independently attested. Your other saved runs are kept within the existing 20-run limit.</p>
+            <label className="block text-cyan-300">Prompt for the next Dashboard live suite
+              <select aria-label="Suite prompt version" disabled={isRunningSuite} value={suitePrompt} onChange={e=>setSuitePrompt(e.target.value as 'default'|'weak'|'revised')} className="ql-input mt-2">
+                <option value="default">Existing default (unchanged)</option><option value="weak">A: Weak support prompt</option><option value="revised">B: Revised careful-support prompt</option>
+              </select>
+            </label>
+            <p className="text-xs text-zinc-400">To run fresh: connect private AI, choose A, run the live suite, choose B, run it again, then compare the two runs. Each suite uses up to one model request per case, plus one server retry on transient 503. Respect the 30 requests/hour owner cap; no automatic paired run. Fictional/public data and free tier only. This choice affects Dashboard live suites, not single-answer tests or sample replays.</p>
+            <details className="text-xs text-zinc-400"><summary>Exact A/B system instructions</summary><p className="mt-2">A: {COMPARISON_PROMPTS.weak}</p><p className="mt-2">B: {COMPARISON_PROMPTS.revised}</p><p className="mt-2">Both variants also receive the same server grounding instructions, reference context, question and JSON requirement. The dataset/rules stay fixed. Scores can vary on later runs.</p></details>
+          </details>
           <div className="mb-5 p-4 bg-zinc-900 border border-zinc-700 rounded-xl text-sm space-y-2">
             <details open={!ownerSignedIn&&currentTab!=='overview'}><summary className="cursor-pointer text-cyan-300 font-semibold">{ownerSignedIn?'Connected for live AI':'Connect your private AI access'}</summary><p className="text-xs text-zinc-400 mt-2">Paste your QualityLab website password below, not your Google password or API key. Live AI stays private to you.</p><input aria-label="Owner access password" type="password" autoComplete="current-password" placeholder="Your QualityLab website password" className="ql-input" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)}/><button className="ql-button mt-2" onClick={async()=>{try{const r=await fetch('api/owner/login',{method:'POST',signal:AbortSignal.timeout(90000),headers:{'Content-Type':'application/json'},body:JSON.stringify({password:ownerPassword})});const d=await r.json();setOwnerStatus(r.ok?'Owner signed in for 8 hours.':d.error);setOwnerSignedIn(r.ok);setOwnerPassword('');await refreshServerStatus();}catch{setOwnerStatus('No private backend is connected at this URL.');}}}>Connect live AI</button><button className="ql-button mt-2 ml-2" onClick={async()=>{try{await fetch('api/owner/logout',{method:'POST'});setOwnerStatus('Signed out. Live calls are locked.');setOwnerSignedIn(false);await refreshServerStatus();}catch{setOwnerStatus('Could not reach private backend.');}}}>Sign out</button><p role="status">{ownerStatus}</p></details>
             <p className="text-xs text-zinc-400">Fictional/public inputs only. Use a ready-made test below or open advanced settings to design your own. Free hosting can wake slowly.</p>
